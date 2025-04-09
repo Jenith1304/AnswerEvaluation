@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const config = require("config")
 
-mongoose.connect(`${config.get("MONGODB_URI")}/answerevaluation`)
+mongoose.connect(`${config.get("MONGODB_URI")}`)
     .then(() => {
         console.log("Mongoose Connected");
     })
