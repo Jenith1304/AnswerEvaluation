@@ -1,3 +1,3 @@
 {
-    "MONGODB_URI":"mongodb://localhost:27017"
+    "MONGODB_URI":"mongodb+srv://kskj:Abcd@1234@answersheetevaluation.8yvb22a.mongodb.net/?retryWrites=true&w=majority&appName=AnswerSheetEvaluation"
 }
