@@ -7,7 +7,10 @@ const { urlencoded } = require("body-parser");
 const cookieParser = require("cookie-parser")
 const authRoute = require("./routes/authRoutes")
 const studentRoute = require("./routes/studentRoutes")
-const dotenv = require("dotenv")
+const adminRoute = require("./routes/adminRoutes")
+const seedRoute = require("./routes/seedRoutes");
+const dotenv = require("dotenv");
+const teacherRouter = require("./routes/teacherRoutes");
 dotenv.config();
 
 app.use(express.json())
@@ -25,9 +28,13 @@ app.get("/", async (req, res) => {
     res.send("User Created")
 
 })
-
+app.use("/seed", seedRoute);
+app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/student", studentRoute);
+
+app.use("/api/v1/teacher", teacherRouter);
+
 app.listen(8000, () => {
     console.log(`server connected`)
 })

@@ -3,13 +3,17 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Student = require("../models/Student");
+const Standard = require("../models/Standard");
+const Subject = require("../models/Subject");
+const Teacher = require("../models/Teacher");
+
 
 // Register User
 const register = async (req, res) => {
     try {
-        const { name, email, password, role, standard, section } = req.body;
+        const { name, email, password } = req.body;
 
-        if (!name || !email || !password || !role) {
+        if (!name || !email || !password) {
             return res.status(400).json({ message: "Please fill all details", success: false });
         }
 
@@ -25,19 +29,72 @@ const register = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role,
+            role: "admin",
         });
-        // If user is a student, create Student record
-        if (role === "student") {
-            if (!standard || !section) {
-                return res.status(400).json({ message: "Standard and Section are required for students", success: false });
-            }
-            await Student.create({
-                userId: user._id,
-                standard,
-                section
-            });
-        }
+        // // If user is a student, create Student record
+        // if (role === "student") {
+        //     if (!standard || !section) {
+        //         return res.status(400).json({ message: "Standard and Section are required for students", success: false });
+        //     }
+        //     await Student.create({
+        //         userId: user._id,
+        //         standard,
+        //         section
+        //     });
+        // }
+        // //if user is a teacher,create teacher record
+
+        // if (role === "teacher") {
+        //     const { subjects } = req.body;
+
+        //     if (!subjects || !Array.isArray(subjects) || subjects.length === 0) {
+        //         return res.status(400).json({
+        //             message: "Subjects with standards are required for teachers",
+        //             success: false
+        //         });
+        //     }
+
+        //     // For each subject entry, find the Subject and Standard by name
+        //     const formattedSubjects = [];
+
+        //     for (const s of subjects) {
+        //         if (!s.subject_name || !s.standard_name) {
+        //             return res.status(400).json({
+        //                 message: "Each subject entry must have subject_name and standard_name",
+        //                 success: false
+        //             });
+        //         }
+
+        //         const subjectDoc = await Subject.findOne({ subject_name: s.subject_name.toUpperCase().trim() });
+        //         if (!subjectDoc) {
+        //             return res.status(400).json({
+        //                 message: `Subject '${s.subject_name}' not found`,
+        //                 success: false
+        //             });
+        //         }
+
+        //         const standardDoc = await Standard.findOne({ standard: s.standard_name.trim() });
+        //         if (!standardDoc) {
+        //             return res.status(400).json({
+        //                 message: `Standard '${s.standard_name}' not found`,
+        //                 success: false
+        //             });
+        //         }
+
+        //         formattedSubjects.push({
+        //             subjectId: subjectDoc._id,
+        //             standardId: standardDoc._id
+        //             // section can be added later
+        //         });
+        //     }
+
+        //     await Teacher.create({
+        //         userId: user._id,
+        //         subjects: formattedSubjects
+        //     });
+        // }
+
+
         const payload = { user: { id: user.id, role: user.role } };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
