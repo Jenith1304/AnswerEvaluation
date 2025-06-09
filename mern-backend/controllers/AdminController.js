@@ -290,40 +290,125 @@ const deleteSubject = async (req, res) => {
     }
 }
 
-const getAllTeacher = async(req,res)=>{
+const getAllTeacher = async (req, res) => {
     try {
 
-        const response = await Teacher.find().select('-__v').populate('userId','name email')        
+        const response = await Teacher.find().select('-__v').populate('userId', 'name email')
 
-        if(!response)
-            return res.status(204).json({message : 'No Teacher Found',success : false})
+        if (!response)
+            return res.status(204).json({ message: 'No Teacher Found', success: false })
 
-        return res.status(200).json({message : "Teachers Found",success : true,data : response})
-        
+        return res.status(200).json({ message: "Teachers Found", success: true, data: response })
+
     } catch (error) {
-        console.error("error in getAllTeacherController : ",error)
+        console.error("error in getAllTeacherController : ", error)
 
-        return res.status(500).json({message : "Internal Server Error",success : false})
+        return res.status(500).json({ message: "Internal Server Error", success: false })
     }
 }
 
-const getAllStudents = async(req,res)=>{
+const getAllStudents = async (req, res) => {
     try {
-        
+
         const response = await getStudents()
 
-        if(!response)
-            return res.status(204).json({message : 'No Student Found',success : false})
+        if (!response)
+            return res.status(204).json({ message: 'No Student Found', success: false })
 
-        return res.status(200).json({message : "Students Found",success : true,data : response})
+        return res.status(200).json({ message: "Students Found", success: true, data: response })
 
     } catch (error) {
-        console.error("Error in AllStudentsControllerIn Admin : ",error)
+        console.error("Error in AllStudentsControllerIn Admin : ", error)
 
-        return res.status(500).json({message : "Internal Server Error",success : false})
+        return res.status(500).json({ message: "Internal Server Error", success: false })
 
     }
 }
+const assignSubjectToTeacher = async (req, res) => {
+    try {
+        const teacherId = req.params.id;
+        const { subjectId, standardId } = req.body;
 
-module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject ,getAllTeacher,getAllStudents};
+        const teacher = await Teacher.findOne({ userId: teacherId });
+        if (!teacher) {
+            return res.status(400).json({ message: 'There is no Teacher', success: false });
+        }
+
+        const subjectObjectId = new mongoose.Types.ObjectId(subjectId);
+        const standardObjectId = new mongoose.Types.ObjectId(standardId);
+
+        const subjectExists = await Subject.exists({ _id: subjectObjectId });
+        if (!subjectExists) return res.status(400).json({ message: 'Invalid Subject', success: false });
+
+        const standardExists = await Standard.exists({ _id: standardObjectId });
+        if (!standardExists) return res.status(400).json({ message: 'Invalid Standard', success: false });
+
+        // Check if subject-standard pair already exists
+        const exists = teacher.subjects.some(
+            (s) =>
+                s.subjectId.toString() === subjectId &&
+                s.standardId.toString() === standardId
+        );
+
+        if (exists) {
+            return res.status(400).json({ message: 'Subject Already Exists', success: false });
+        }
+
+        // Add new subject-standard pair
+        teacher.subjects.push({
+            subjectId,
+            standardId
+        });
+
+        await teacher.save();
+        return res.status(200).json({ message: 'Subject Added Successfully', success: true });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server Error', success: false, error: error.message });
+    }
+};
+
+const removeAssignedSubject = async (req, res) => {
+    try {
+        const teacherId = req.params.id;
+        const { subjectId, standardId } = req.body;
+
+        const teacher = await Teacher.findOne({ userId: teacherId });
+        if (!teacher) {
+            return res.status(400).json({ message: 'Teacher not found', success: false });
+        }
+
+        // Convert to ObjectId for comparison if stored as ObjectId in DB
+        const subjectObjectId = new mongoose.Types.ObjectId(subjectId);
+        const standardObjectId = new mongoose.Types.ObjectId(standardId);
+
+        const subjectExists = await Subject.exists({ _id: subjectObjectId });
+        if (!subjectExists) return res.status(400).json({ message: 'Invalid Subject', success: false });
+
+        const standardExists = await Standard.exists({ _id: standardObjectId });
+        if (!standardExists) return res.status(400).json({ message: 'Invalid Standard', success: false });
+
+        // Find the index of the subject-standard pair to remove
+        const index = teacher.subjects.findIndex(
+            (s) =>
+                s.subjectId.toString() === subjectObjectId.toString() &&
+                s.standardId.toString() === standardObjectId.toString()
+        );
+
+        if (index === -1) {
+            return res.status(400).json({ message: 'Subject-Standard pair not found', success: false });
+        }
+
+        // Remove the subject-standard pair from the array
+        teacher.subjects.splice(index, 1);
+
+        // Save updated teacher document
+        await teacher.save();
+
+        return res.status(200).json({ message: 'Subject removed successfully', success: true });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error', success: false, error: error.message });
+    }
+};
+
+module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher};
 

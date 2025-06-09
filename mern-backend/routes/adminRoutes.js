@@ -10,5 +10,8 @@ router.post('/addSubjectToStandard', adminMiddleware, addSubjectToStandard);
 router.post('/removeSubjectFromStandard', adminMiddleware, removeSubjectFromStandard);
 router.post('/addSubject', adminMiddleware, addSubject);
 router.post('/deleteSubject', adminMiddleware, deleteSubject);
+router.get('/assignSubject/:id', assignSubjectToTeacher);
+router.get('/deassignSubject/:id', removeAssignedSubject);
+
 
 module.exports = router;
