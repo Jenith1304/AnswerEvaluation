@@ -1,5 +1,5 @@
 const express = require("express");
-const { createTeacher, createStudent, createTest, deleteTest, addStandard, addSubjectToStandard, removeSubjectFromStandard, addSubject, deleteSubject } = require("../controllers/AdminController");
+const { createTeacher, createStudent, createTest, deleteTest, addStandard, addSubjectToStandard, removeSubjectFromStandard, addSubject, deleteSubject, assignSubjectToTeacher, removeAssignedSubject } = require("../controllers/AdminController");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const router = express.Router();
 

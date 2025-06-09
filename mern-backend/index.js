@@ -32,7 +32,6 @@ app.use("/seed", seedRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/student", studentRoute);
-
 app.use("/api/v1/teacher", teacherRouter);
 
 app.listen(8000, () => {
