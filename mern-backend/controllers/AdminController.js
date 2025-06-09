@@ -5,7 +5,8 @@ const Student = require("../models/Student");
 const Standard = require("../models/Standard");
 const Teacher = require("../models/Teacher");
 const Subject = require("../models/Subject")
-const { isSubjectInStandard } = require('../services/subjectAndStandard.service')
+const { isSubjectInStandard } = require('../services/subjectAndStandard.service');
+const getStudents = require("../services/getStudents");
 
 const createTeacher = async (req, res) => {
 
@@ -289,8 +290,40 @@ const deleteSubject = async (req, res) => {
     }
 }
 
+const getAllTeacher = async(req,res)=>{
+    try {
 
+        const response = await Teacher.find().select('-__v').populate('userId','name email')        
 
+        if(!response)
+            return res.status(204).json({message : 'No Teacher Found',success : false})
 
-module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject };
+        return res.status(200).json({message : "Teachers Found",success : true,data : response})
+        
+    } catch (error) {
+        console.error("error in getAllTeacherController : ",error)
+
+        return res.status(500).json({message : "Internal Server Error",success : false})
+    }
+}
+
+const getAllStudents = async(req,res)=>{
+    try {
+        
+        const response = await getStudents()
+
+        if(!response)
+            return res.status(204).json({message : 'No Student Found',success : false})
+
+        return res.status(200).json({message : "Students Found",success : true,data : response})
+
+    } catch (error) {
+        console.error("Error in AllStudentsControllerIn Admin : ",error)
+
+        return res.status(500).json({message : "Internal Server Error",success : false})
+
+    }
+}
+
+module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject ,getAllTeacher,getAllStudents};
 
