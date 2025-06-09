@@ -1,6 +1,6 @@
 const Student = require("../models/Student")
 
-const getStandardBasedStudent = async(standardId)=>{
+const getStudentsBasedOnStandard = async(standardId)=>{
 try {
         
         const response = await Student.find({standardId : standardId}).select("userId standardId rollNumber")
@@ -15,4 +15,4 @@ try {
 
 }
 
-module.exports = getStandardBasedStudent
+module.exports = getStudentsBasedOnStandard
