@@ -153,4 +153,102 @@ const deleteTest = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error", success: false });
     }
 };
-module.exports = { createTest, getAllTests, deleteTest };
+
+//for getting all questions of particular test
+const getAllQuestions = async (req, res) => {
+    try {
+        const { testId } = req.params;
+
+        if (!testId) {
+            return res.status(400).json({ message: "Test ID is required", success: false });
+        }
+
+        const test = await Test.findById(testId).populate("questionIds");
+
+        if (!test) {
+            return res.status(404).json({ message: "Test not found", success: false });
+        }
+
+        return res.status(200).json({
+            message: "Questions fetched successfully",
+            questions: test.questionIds,
+            success: true
+        });
+    } catch (error) {
+        console.error("Error fetching test questions:", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+}
+
+//update questions in test
+const updateQuestionInTest = async (req, res) => {
+    try {
+        const { testId, questionId } = req.params;
+        const { questionText, referenceAnswer, marks } = req.body;
+
+        // ❌ If testId or questionId is missing in the request URL
+        if (!testId || !questionId) {
+            return res.status(400).json({
+                message: "Cannot PUT - testId or questionId missing",
+                success: false
+            });
+        }
+
+        // ❌ If any required field is missing
+        if (!questionText || !referenceAnswer || marks === undefined) {
+            return res.status(400).json({
+                message: "All fields (questionText, referenceAnswer, marks) are required",
+                success: false
+            });
+        }
+
+        // ✅ Check if test exists
+        const test = await Test.findById(testId);
+        if (!test) {
+            return res.status(404).json({
+                message: "Test not found",
+                success: false
+            });
+        }
+
+        // ✅ Check if the question belongs to the test
+        const isQuestionInTest = test.questionIds.includes(questionId);
+        if (!isQuestionInTest) {
+            return res.status(403).json({
+                message: "This question does not belong to the given test",
+                success: false
+            });
+        }
+
+        // ✅ Update the question
+        const updatedQuestion = await Question.findByIdAndUpdate(
+            questionId,
+            {
+                questionText: questionText.trim(),
+                referenceAnswer: referenceAnswer.trim(),
+                marks
+            },
+            { new: true }
+        );
+
+        if (!updatedQuestion) {
+            return res.status(404).json({
+                message: "Question not found",
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: "Question updated successfully",
+            question: updatedQuestion,
+            success: true
+        });
+    } catch (error) {
+        console.error("Error updating question in test:", error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
+    }
+};
+module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest };
