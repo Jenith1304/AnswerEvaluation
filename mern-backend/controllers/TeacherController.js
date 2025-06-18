@@ -251,4 +251,104 @@ const updateQuestionInTest = async (req, res) => {
         });
     }
 };
-module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest };
+const addQuestionToTest = async (req, res) => {
+    try {
+        const { testId } = req.params;
+        const { questionText, referenceAnswer, marks } = req.body;
+
+        // ✅ Check if testId is provided
+        if (!testId) {
+            return res.status(400).json({ message: "testId is required", success: false });
+        }
+
+        // ✅ Check required fields
+        if (!questionText || !referenceAnswer || marks === undefined) {
+            return res.status(400).json({
+                message: "questionText, referenceAnswer, and marks are required",
+                success: false
+            });
+        }
+
+        // ✅ Check if test exists
+        const test = await Test.findById(testId);
+        if (!test) {
+            return res.status(404).json({ message: "Test not found", success: false });
+        }
+
+        // ✅ Check if the same question already exists (by content)
+        let question = await Question.findOne({
+            questionText: questionText.trim(),
+            referenceAnswer: referenceAnswer.trim(),
+            marks
+        });
+
+        // ✅ If not, create new question
+        if (!question) {
+            question = await Question.create({
+                questionText: questionText.trim(),
+                referenceAnswer: referenceAnswer.trim(),
+                marks
+            });
+        }
+
+        // ✅ Prevent adding the same question twice to the same test
+        const isAlreadyInTest = test.questionIds.includes(question._id);
+        if (isAlreadyInTest) {
+            return res.status(400).json({
+                message: "Question already exists in the test",
+                success: false
+            });
+        }
+
+        // ✅ Add question to test
+        test.questionIds.push(question._id);
+        await test.save();
+
+        return res.status(201).json({
+            message: "Question added to test successfully",
+            question,
+            success: true
+        });
+
+    } catch (error) {
+        console.error("Error in addQuestionToTest:", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+const removeQuestionFromTest = async (req, res) => {
+    try {
+        const { testId, questionId } = req.params;
+
+        // ✅ Validate input
+        if (!testId || !questionId) {
+            return res.status(400).json({ message: "Both testId and questionId are required", success: false });
+        }
+
+        // ✅ Find the test
+        const test = await Test.findById(testId);
+        if (!test) {
+            return res.status(404).json({ message: "Test not found", success: false });
+        }
+
+        // ✅ Check if the question exists in test
+        const questionIndex = test.questionIds.indexOf(questionId);
+        if (questionIndex === -1) {
+            return res.status(404).json({ message: "Question not found in test", success: false });
+        }
+
+        // ✅ Remove question
+        test.questionIds.splice(questionIndex, 1);
+        await test.save();
+
+        return res.status(200).json({
+            message: "Question removed from test successfully",
+            success: true
+        });
+
+    } catch (error) {
+        console.error("Error in removeQuestionFromTest:", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+
+module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest };

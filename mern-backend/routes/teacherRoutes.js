@@ -1,6 +1,6 @@
 const express = require('express')
 const teacherMiddleware = require('../middlewares/teacherMiddleware')
-const { createTest, deleteTest, getAllTests, getAllQuestions, updateQuestionInTest } = require('../controllers/TeacherController')
+const { createTest, deleteTest, getAllTests, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest } = require('../controllers/TeacherController')
 
 const teacherRouter = express.Router()
 
@@ -9,6 +9,9 @@ teacherRouter.post('/deletetest/:id', teacherMiddleware, deleteTest)
 teacherRouter.post('/createTest', teacherMiddleware, createTest)
 teacherRouter.get('/getAllTests', teacherMiddleware, getAllTests)
 teacherRouter.get("/test/:testId/questions", teacherMiddleware, getAllQuestions);
-teacherRouter.put("/test/:testId/question/:questionId", updateQuestionInTest);
+teacherRouter.put("/test/:testId/question/:questionId", teacherMiddleware, updateQuestionInTest);
+teacherRouter.post("/test/:testId/", teacherMiddleware, addQuestionToTest);
+teacherRouter.post("/test/:testId/question/:questionId", teacherMiddleware, removeQuestionFromTest);
+
 
 module.exports = teacherRouter  
