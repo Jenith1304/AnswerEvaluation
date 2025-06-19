@@ -45,4 +45,34 @@ const deleteTest = async (req, res) => {
     }
 }
 
-module.exports = { createTest, deleteTest }
+const AnswerSheetPDF = require('../models/AnswerSheetPDF')
+
+const uploadAnswerSheet = async (req, res) => {
+  try {
+    const { studentId, testId } = req.params;
+    const teacherId = req.user.id; // assuming authentication sets req.user
+
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ message: "No file uploaded", success: false });
+    }
+
+    const newAnswer = await AnswerSheetPDF.create({
+      studentId,
+      testId,
+      fileUrl: req.file.path,
+      uploadedBy: teacherId
+    });
+
+    return res.status(201).json({
+      message: "Answer sheet uploaded successfully",
+      data: newAnswer,
+      success: true
+    });
+  } catch (err) {
+    console.error("Answer sheet upload error:", err);
+    return res.status(500).json({ message: "Internal Server Error", success: false });
+  }
+};
+
+
+module.exports = { createTest, deleteTest ,uploadAnswerSheet}
