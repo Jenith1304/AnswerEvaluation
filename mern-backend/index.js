@@ -1,3 +1,5 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express")
 const app = express();
 const mongoose = require("mongoose");
@@ -9,9 +11,8 @@ const authRoute = require("./routes/authRoutes")
 const studentRoute = require("./routes/studentRoutes")
 const adminRoute = require("./routes/adminRoutes")
 const seedRoute = require("./routes/seedRoutes");
-const dotenv = require("dotenv");
 const teacherRouter = require("./routes/teacherRoutes");
-dotenv.config();
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));

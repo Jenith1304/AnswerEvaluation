@@ -1,8 +1,9 @@
 const Question = require("../models/Question");
 const Test = require("../models/Test");
 const Teacher = require("../models/Teacher");
-const Subject = require("../models/Subject");
-const Standard = require("../models/Standard");
+const AnswerSheetPDF = require("../models/AnswerSheetPDF")
+const getPdfPageCount = require("../services/getPdfPageCount");
+const generateImageUrlsFromCloudinaryPDF = require("../services/pdfToImageUrls");
 
 const createTest = async (req, res) => {
     try {
@@ -350,5 +351,52 @@ const removeQuestionFromTest = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error", success: false });
     }
 };
+const extractImagesFromPDF = async (req, res) => {
+    try {
+        const { answerSheetId } = req.body;
 
-module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest };
+        if (!answerSheetId) {
+            return res.status(400).json({ error: "answerSheetId is required." });
+        }
+
+        // Fetch PDF record
+        const pdfRecord = await AnswerSheetPDF.findById(answerSheetId);
+        if (!pdfRecord) {
+            return res.status(404).json({ error: "Answer sheet not found." });
+        }
+
+        const fileUrl = pdfRecord.fileUrl;
+
+        // ✅ Extract correct public_id from Cloudinary URL (without version and extension)
+        const fileUrlParts = fileUrl.split("/upload/");
+        if (fileUrlParts.length < 2) {
+            return res.status(400).json({ error: "Invalid Cloudinary URL format." });
+        }
+
+        let publicIdWithExt = fileUrlParts[1]; // e.g. "v123456789/folder/filename.pdf"
+        let pathParts = publicIdWithExt.split("/");
+
+        // Remove version prefix (starts with 'v')
+        if (pathParts[0].startsWith("v") && !isNaN(pathParts[0].slice(1))) {
+            pathParts.shift();
+        }
+
+        const cleanedPublicId = pathParts.join("/").replace(".pdf", "");
+
+        // ✅ Get total page count
+        const totalPages = await getPdfPageCount(cleanedPublicId);
+        if (!totalPages || totalPages < 1) {
+            return res.status(400).json({ error: "Could not determine page count of the PDF." });
+        }
+
+        // ✅ Generate image URLs for each page using Cloudinary transformations
+        const imageUrls = generateImageUrlsFromCloudinaryPDF(fileUrl, totalPages);
+
+        return res.status(200).json({ totalPages, imageUrls });
+
+    } catch (err) {
+        console.error("Failed to extract PDF pages", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF };
