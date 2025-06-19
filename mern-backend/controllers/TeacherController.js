@@ -1,9 +1,9 @@
 const Question = require("../models/Question");
 const Test = require("../models/Test");
 const Teacher = require("../models/Teacher");
-const AnswerSheetPDF = require("../models/AnswerSheetPDF")
 const getPdfPageCount = require("../services/getPdfPageCount");
 const generateImageUrlsFromCloudinaryPDF = require("../services/pdfToImageUrls");
+const AnswerSheetPDF = require('../models/AnswerSheetPDF')
 
 const createTest = async (req, res) => {
     try {
@@ -181,7 +181,6 @@ const getAllQuestions = async (req, res) => {
     }
 }
 
-const AnswerSheetPDF = require('../models/AnswerSheetPDF')
 
 const uploadAnswerSheet = async (req, res) => {
   try {
