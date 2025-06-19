@@ -12,10 +12,7 @@ const studentRoute = require("./routes/studentRoutes")
 const adminRoute = require("./routes/adminRoutes")
 const seedRoute = require("./routes/seedRoutes");
 const teacherRouter = require("./routes/teacherRoutes");
-<<<<<<< HEAD
 
-=======
->>>>>>> devKrish
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
