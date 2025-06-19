@@ -13,6 +13,7 @@ const adminRoute = require("./routes/adminRoutes")
 const seedRoute = require("./routes/seedRoutes");
 const teacherRouter = require("./routes/teacherRoutes");
 
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -32,7 +33,6 @@ app.use("/seed", seedRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/student", studentRoute);
-
 app.use("/api/v1/teacher", teacherRouter);
 
 app.listen(8000, () => {
