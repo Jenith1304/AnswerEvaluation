@@ -5,7 +5,7 @@ const cloudinary = require("../config/cloudinary");
 async function getPdfPageCount(publicId) {
     try {
         const resource = await cloudinary.api.resource(publicId, {
-            resource_type: "raw",
+            resource_type: "image",
             type: "upload",
             pages: true
         });

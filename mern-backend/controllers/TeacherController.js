@@ -4,6 +4,10 @@ const Teacher = require("../models/Teacher");
 const AnswerSheetPDF = require("../models/AnswerSheetPDF")
 const getPdfPageCount = require("../services/getPdfPageCount");
 const generateImageUrlsFromCloudinaryPDF = require("../services/pdfToImageUrls");
+const vision = require('@google-cloud/vision');
+// Init Google Vision client (make sure GOOGLE_APPLICATION_CREDENTIALS is set)
+const client = new vision.ImageAnnotatorClient();
+
 
 const createTest = async (req, res) => {
     try {
@@ -392,11 +396,55 @@ const extractImagesFromPDF = async (req, res) => {
         // ✅ Generate image URLs for each page using Cloudinary transformations
         const imageUrls = generateImageUrlsFromCloudinaryPDF(fileUrl, totalPages);
 
-        return res.status(200).json({ totalPages, imageUrls });
+
+
+
+
+
+        //image URL to Cloud VISION
+        // const questionRegex = /(Q\.\?\s?\d+|Question\s?\d+|\b\d+\.)/gi;
+        // const { imageUrls } = req.body;
+
+        if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+            return res.status(400).json({ error: 'imageUrls must be a non-empty array.' });
+        }
+
+        const extractedAnswers = [];
+
+        for (let i = 0; i < imageUrls.length; i++) {
+            const url = imageUrls[i];
+
+            const [result] = await client.documentTextDetection({ image: { source: { imageUri: url } } });
+
+            const fullText = result.fullTextAnnotation?.text || '';
+
+            if (!fullText.trim()) {
+                extractedAnswers.push(`Answer ${i + 1}:
+                    No text detected.`);
+                continue;
+            }
+
+            // Treat entire page as a separate answer
+            extractedAnswers.push(`Answer ${i + 1}:
+            ${fullText.trim()}`);
+        }
+
+        // Combine all answers
+        const finalText = extractedAnswers.join('\n\n-------------------------------\n\n');
+
+        // Return the final structured text
+        // return res.status(200).json({ totalPages, imageUrls });
+        return res.status(200).json({ message: 'OCR completed successfully.', textOutput: finalText, totalPages, imageUrls });
+
 
     } catch (err) {
         console.error("Failed to extract PDF pages", err);
         res.status(500).json({ error: "Internal server error" });
+        console.error('OCR Processing Failed:', err);
+        res.status(500).json({ error: 'Internal server error.' });
     }
 };
-module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF };
+
+module.exports = {
+    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF, 
+};

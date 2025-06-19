@@ -9,11 +9,17 @@ const generateImageUrlsFromCloudinaryPDF = (fileUrl, totalPages) => {
     const imageUrls = [];
 
     for (let i = 1; i <= totalPages; i++) {
-        const imageUrl = `${baseUrl}/upload/pg_${i}/${resourcePath}`;
+        // const imageUrl = `${baseUrl}/upload/pg_${i}/${resourcePath}`;
+        // Remove .pdf extension if present
+        const cleanResourcePath = resourcePath.replace(/\.pdf$/, "");
+
+            // Generate JPG URL
+        const imageUrl = `${baseUrl}/upload/pg_${i}/${cleanResourcePath}.jpg`;
         imageUrls.push(imageUrl);
     }
 
     return imageUrls;
 };
+
 
 module.exports = generateImageUrlsFromCloudinaryPDF;
