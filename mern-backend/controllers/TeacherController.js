@@ -185,8 +185,6 @@ const getAllQuestions = async (req, res) => {
     }
 }
 
-const AnswerSheetPDF = require('../models/AnswerSheetPDF')
-
 const uploadAnswerSheet = async (req, res) => {
     try {
         const { studentId, testId } = req.params;
