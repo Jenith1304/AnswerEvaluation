@@ -1,5 +1,5 @@
 const express = require("express");
-const { createTeacher, createStudent, createTest, deleteTest, addStandard, addSubjectToStandard, removeSubjectFromStandard, addSubject, deleteSubject, getStandardBasedTeachers, getStandardBasedStudent,assignSubjectToTeacher ,removeAssignedSubject} = require("../controllers/AdminController");
+const { createTeacher, createStudent, createTest, deleteTest, addStandard, addSubjectToStandard, removeSubjectFromStandard, addSubject, deleteSubject, getStandardBasedTeachers, getStandardBasedStudent,assignSubjectToTeacher ,removeAssignedSubject, getAllStudents, getAllTeacher} = require("../controllers/AdminController");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const router = express.Router();
 
@@ -16,4 +16,6 @@ router.get('/deassignSubject/:id', removeAssignedSubject);
 router.get('/getStandardBasedTeacher/:standardId',adminMiddleware,getStandardBasedTeachers)
 router.get('/getStandardBasedStudent/:standardId',adminMiddleware,getStandardBasedStudent)
 
+router.get('/getAllStudents',adminMiddleware,getAllStudents)
+router.get('/getAllTeachers',adminMiddleware,getAllTeacher)
 module.exports = router;
