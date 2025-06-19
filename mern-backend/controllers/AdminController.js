@@ -1,12 +1,13 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const Student = require("../models/Student");
 const Standard = require("../models/Standard");
 const Teacher = require("../models/Teacher");
 const Subject = require("../models/Subject")
 const { isSubjectInStandard } = require('../services/subjectAndStandard.service');
 const getStudents = require("../services/getStudents");
+const getStandardBasedTeacher = require("../services/getStandardBasedTeachers");
+const getStudentsBasedOnStandard = require("../services/getStandardBasedStudents");
 
 const createTeacher = async (req, res) => {
 
@@ -410,5 +411,47 @@ const removeAssignedSubject = async (req, res) => {
     }
 };
 
-module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher};
+
+const getStandardBasedTeachers = async(req,res)=>{
+    try {
+
+        const standardId = req.params.standardId
+        if(!standardId)
+            return res.status(404).json({message : "StandardId is invalid",success : false})
+
+        const teachers = await getStandardBasedTeacher(standardId)
+
+        if(!teachers)
+            return res.status(204).json({message : "No Teacher Found",success : true})
+
+        return res.status(200).json({message : 'Teachers Found',success : true,data : teachers})
+        
+    } catch (error) {
+        console.error("Error in getStandardBasedTreachercontroller : ",error)
+
+        return res.status(500).json({message : 'Internal Server Error',success : false})
+    }    
+}
+
+const getStandardBasedStudent = async(req,res)=>{
+    try {
+
+        const standardId = req.params.standardId
+
+        const students = await getStudentsBasedOnStandard(standardId)
+
+        if(!students || students.length == 0)
+            return res.status(200).json({message : "No Student Found",success : true})
+
+        return res.status(200).json({message : 'Student Found',success : true,data : students})
+
+    } catch (error) {
+        console.error("Error in getStandardBasedStudentcontroller : ",error)
+
+        return res.status(500).json({message : 'Internal Server Error',success : false})
+
+    }
+}
+
+module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher,getStandardBasedStudent,getStandardBasedTeachers};
 

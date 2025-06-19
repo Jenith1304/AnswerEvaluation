@@ -181,222 +181,34 @@ const getAllQuestions = async (req, res) => {
     }
 }
 
-//update questions in test
-const updateQuestionInTest = async (req, res) => {
-    try {
-        const { testId, questionId } = req.params;
-        const { questionText, referenceAnswer, marks } = req.body;
+const AnswerSheetPDF = require('../models/AnswerSheetPDF')
 
-        // ❌ If testId or questionId is missing in the request URL
-        if (!testId || !questionId) {
-            return res.status(400).json({
-                message: "Cannot PUT - testId or questionId missing",
-                success: false
-            });
-        }
+const uploadAnswerSheet = async (req, res) => {
+  try {
+    const { studentId, testId } = req.params;
+    const teacherId = req.user.id; // assuming authentication sets req.user
 
-        // ❌ If any required field is missing
-        if (!questionText || !referenceAnswer || marks === undefined) {
-            return res.status(400).json({
-                message: "All fields (questionText, referenceAnswer, marks) are required",
-                success: false
-            });
-        }
-
-        // ✅ Check if test exists
-        const test = await Test.findById(testId);
-        if (!test) {
-            return res.status(404).json({
-                message: "Test not found",
-                success: false
-            });
-        }
-
-        // ✅ Check if the question belongs to the test
-        const isQuestionInTest = test.questionIds.includes(questionId);
-        if (!isQuestionInTest) {
-            return res.status(403).json({
-                message: "This question does not belong to the given test",
-                success: false
-            });
-        }
-
-        // ✅ Update the question
-        const updatedQuestion = await Question.findByIdAndUpdate(
-            questionId,
-            {
-                questionText: questionText.trim(),
-                referenceAnswer: referenceAnswer.trim(),
-                marks
-            },
-            { new: true }
-        );
-
-        if (!updatedQuestion) {
-            return res.status(404).json({
-                message: "Question not found",
-                success: false
-            });
-        }
-
-        return res.status(200).json({
-            message: "Question updated successfully",
-            question: updatedQuestion,
-            success: true
-        });
-    } catch (error) {
-        console.error("Error updating question in test:", error);
-        return res.status(500).json({
-            message: "Internal Server Error",
-            success: false
-        });
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ message: "No file uploaded", success: false });
     }
+
+    const newAnswer = await AnswerSheetPDF.create({
+      studentId,
+      testId,
+      fileUrl: req.file.path,
+      uploadedBy: teacherId
+    });
+
+    return res.status(201).json({
+      message: "Answer sheet uploaded successfully",
+      data: newAnswer,
+      success: true
+    });
+  } catch (err) {
+    console.error("Answer sheet upload error:", err);
+    return res.status(500).json({ message: "Internal Server Error", success: false });
+  }
 };
-const addQuestionToTest = async (req, res) => {
-    try {
-        const { testId } = req.params;
-        const { questionText, referenceAnswer, marks } = req.body;
 
-        // ✅ Check if testId is provided
-        if (!testId) {
-            return res.status(400).json({ message: "testId is required", success: false });
-        }
 
-        // ✅ Check required fields
-        if (!questionText || !referenceAnswer || marks === undefined) {
-            return res.status(400).json({
-                message: "questionText, referenceAnswer, and marks are required",
-                success: false
-            });
-        }
-
-        // ✅ Check if test exists
-        const test = await Test.findById(testId);
-        if (!test) {
-            return res.status(404).json({ message: "Test not found", success: false });
-        }
-
-        // ✅ Check if the same question already exists (by content)
-        let question = await Question.findOne({
-            questionText: questionText.trim(),
-            referenceAnswer: referenceAnswer.trim(),
-            marks
-        });
-
-        // ✅ If not, create new question
-        if (!question) {
-            question = await Question.create({
-                questionText: questionText.trim(),
-                referenceAnswer: referenceAnswer.trim(),
-                marks
-            });
-        }
-
-        // ✅ Prevent adding the same question twice to the same test
-        const isAlreadyInTest = test.questionIds.includes(question._id);
-        if (isAlreadyInTest) {
-            return res.status(400).json({
-                message: "Question already exists in the test",
-                success: false
-            });
-        }
-
-        // ✅ Add question to test
-        test.questionIds.push(question._id);
-        await test.save();
-
-        return res.status(201).json({
-            message: "Question added to test successfully",
-            question,
-            success: true
-        });
-
-    } catch (error) {
-        console.error("Error in addQuestionToTest:", error);
-        return res.status(500).json({ message: "Internal Server Error", success: false });
-    }
-};
-const removeQuestionFromTest = async (req, res) => {
-    try {
-        const { testId, questionId } = req.params;
-
-        // ✅ Validate input
-        if (!testId || !questionId) {
-            return res.status(400).json({ message: "Both testId and questionId are required", success: false });
-        }
-
-        // ✅ Find the test
-        const test = await Test.findById(testId);
-        if (!test) {
-            return res.status(404).json({ message: "Test not found", success: false });
-        }
-
-        // ✅ Check if the question exists in test
-        const questionIndex = test.questionIds.indexOf(questionId);
-        if (questionIndex === -1) {
-            return res.status(404).json({ message: "Question not found in test", success: false });
-        }
-
-        // ✅ Remove question
-        test.questionIds.splice(questionIndex, 1);
-        await test.save();
-
-        return res.status(200).json({
-            message: "Question removed from test successfully",
-            success: true
-        });
-
-    } catch (error) {
-        console.error("Error in removeQuestionFromTest:", error);
-        return res.status(500).json({ message: "Internal Server Error", success: false });
-    }
-};
-const extractImagesFromPDF = async (req, res) => {
-    try {
-        const { answerSheetId } = req.body;
-
-        if (!answerSheetId) {
-            return res.status(400).json({ error: "answerSheetId is required." });
-        }
-
-        // Fetch PDF record
-        const pdfRecord = await AnswerSheetPDF.findById(answerSheetId);
-        if (!pdfRecord) {
-            return res.status(404).json({ error: "Answer sheet not found." });
-        }
-
-        const fileUrl = pdfRecord.fileUrl;
-
-        // ✅ Extract correct public_id from Cloudinary URL (without version and extension)
-        const fileUrlParts = fileUrl.split("/upload/");
-        if (fileUrlParts.length < 2) {
-            return res.status(400).json({ error: "Invalid Cloudinary URL format." });
-        }
-
-        let publicIdWithExt = fileUrlParts[1]; // e.g. "v123456789/folder/filename.pdf"
-        let pathParts = publicIdWithExt.split("/");
-
-        // Remove version prefix (starts with 'v')
-        if (pathParts[0].startsWith("v") && !isNaN(pathParts[0].slice(1))) {
-            pathParts.shift();
-        }
-
-        const cleanedPublicId = pathParts.join("/").replace(".pdf", "");
-
-        // ✅ Get total page count
-        const totalPages = await getPdfPageCount(cleanedPublicId);
-        if (!totalPages || totalPages < 1) {
-            return res.status(400).json({ error: "Could not determine page count of the PDF." });
-        }
-
-        // ✅ Generate image URLs for each page using Cloudinary transformations
-        const imageUrls = generateImageUrlsFromCloudinaryPDF(fileUrl, totalPages);
-
-        return res.status(200).json({ totalPages, imageUrls });
-
-    } catch (err) {
-        console.error("Failed to extract PDF pages", err);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
-module.exports = { createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF };
+module.exports = { createTest, deleteTest ,uploadAnswerSheet}
