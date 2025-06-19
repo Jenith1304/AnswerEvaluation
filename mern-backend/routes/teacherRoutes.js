@@ -1,7 +1,6 @@
 const express = require('express')
 const teacherMiddleware = require('../middlewares/teacherMiddleware')
 const { createTest, deleteTest, getAllTests, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF } = require('../controllers/TeacherController')
-const { createTest, deleteTest, uploadAnswerSheet } = require('../controllers/TeacherController')
 
 const teacherRouter = express.Router()
 
