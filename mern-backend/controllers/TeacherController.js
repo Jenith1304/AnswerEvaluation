@@ -1,4 +1,5 @@
 const Test = require("../models/Test");
+const AnswerSheetPDF = require('../models/AnswerSheetPDF')
 
 const createTest = async (req, res) => {
 
@@ -44,8 +45,6 @@ const deleteTest = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" })
     }
 }
-
-const AnswerSheetPDF = require('../models/AnswerSheetPDF')
 
 const uploadAnswerSheet = async (req, res) => {
   try {
