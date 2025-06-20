@@ -6,7 +6,7 @@ const TestSchema = new mongoose.Schema({
   subjectId: { type: mongoose.Schema.Types.ObjectId, ref: "Subject", required: true },
   standardId: { type: mongoose.Schema.Types.ObjectId, ref: "Standard", required: true },
   testTitle: { type: String, required: true },
-  totalMarks: { type: Number, required: true },
+  totalMarks: { type: Number, required: true, default: 0 },
   testDate: { type: Date, required: true },
   durationMinutes: { type: Number },
   questionIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
