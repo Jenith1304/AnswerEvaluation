@@ -268,7 +268,7 @@ const updateQuestionInTest = async (req, res) => {
         );
 
         // Update test.totalMarks if marks were changed
-        const markDifference = marks - originalQuestion.marks;
+        const markDifference = parseInt(marks) - originalQuestion.marks;
         if (markDifference !== 0) {
             test.totalMarks += markDifference;
             await test.save();
@@ -335,7 +335,7 @@ const addQuestionToTest = async (req, res) => {
         test.questionIds.push(question._id);
 
         // ✅ Update total marks
-        test.totalMarks += marks;
+        test.totalMarks += parseInt(marks);
 
         await test.save();
 
