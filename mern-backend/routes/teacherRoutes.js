@@ -16,6 +16,6 @@ teacherRouter.get("/test/:testId/questions", teacherMiddleware, getAllQuestions)
 teacherRouter.put("/updateQuestion/:testId/question/:questionId", teacherMiddleware, updateQuestionInTest);
 teacherRouter.post("/addQuestion/:testId/", teacherMiddleware, addQuestionToTest);
 teacherRouter.post("/removeQuestion/:testId/question/:questionId", teacherMiddleware, removeQuestionFromTest);
-teacherRouter.get("/extractImagesFromPDF", teacherMiddleware, evaluateResult);
+teacherRouter.get("/evaulateResult", teacherMiddleware, evaluateResult);
 
 module.exports = teacherRouter  
