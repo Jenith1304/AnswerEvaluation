@@ -1,0 +1,115 @@
+.detail-container {
+    padding: 2rem;
+    background-color: #f8f9fa; /* Light background for the page */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.back-button:hover {
+    color: #007bff;
+}
+
+.teacher-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.teacher-name {
+    margin: 0;
+    font-size: 2rem;
+    color: #212529;
+}
+
+.teacher-email {
+    margin: 5px 0 0;
+    color: #6c757d;
+}
+
+.actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-left: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-update {
+    background-color: #0d6efd;
+    color: white;
+}
+.btn-update:hover {
+    background-color: #0b5ed7;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-delete:hover {
+    background-color: #bb2d3b;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-body h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #343a40;
+    font-size: 1.25rem;
+}
+
+.subjects-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.subject-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.subject-item:last-child {
+    border-bottom: none;
+}
+
+.subject-item-name {
+    font-weight: 500;
+    color: #343a40;
+}
+
+.subject-item-standard {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}

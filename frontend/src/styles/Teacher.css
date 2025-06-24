@@ -1,0 +1,173 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Define CSS variables for consistent theming */
+:root {
+  --primary-bg: #F8F9FA;
+  --card-bg: #FFFFFF;
+  --text-primary: #212529;
+  --text-secondary: #6C757D;
+  --highlight-blue: #007BFF;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Main card container for the page */
+.teacher-page-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Header section containing title and filter */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allows items to wrap to the next line on small screens */
+  gap: 1rem; /* Adds space between items when they wrap */
+  margin-bottom: 1.5rem;
+}
+
+/* Main title styling */
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0; /* Remove default margins */
+  color: var(--text-primary);
+}
+
+/* Container for the standard filter dropdown */
+.form-group {
+  margin: 0;
+}
+
+/* Standard filter dropdown styling */
+.form-group select {
+  min-width: 250px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: var(--highlight-blue);
+}
+
+/* Wrapper to make the table horizontally scrollable on small screens */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* This is key for responsiveness */
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Styling for subject tags */
+.subject-badge {
+  display: inline-block;
+  background-color: var(--primary-bg);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.8rem;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem; /* Ensures badges wrap nicely */
+}
+
+/* Styling for the 'No teachers found' message */
+.no-data-message td {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.clickable-row:hover {
+    background-color: #f8f9fa; /* A subtle hover effect */
+}
+
+.arrow-cell {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #0d6efd; /* Use a color from your theme */
+    text-align: center;
+}
+
+/* This is likely your existing style, just for completeness */
+.subject-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin: 3px;
+    display: inline-block;
+    font-size: 0.85rem;
+}
+
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* For tablets and smaller devices (e.g., screen width below 768px) */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column; /* Stack title and dropdown vertically */
+    align-items: flex-start; /* Align items to the left */
+  }
+
+  .page-title {
+    font-size: 1.5rem; /* Slightly smaller title on mobile */
+  }
+
+  .form-group select {
+    width: 100%; /* Make the dropdown take full width */
+  }
+
+  th, td {
+    padding: 0.75rem; /* Reduce padding for more space */
+  }
+}
+
+/* For small mobile devices (e.g., screen width below 480px) */
+@media (max-width: 480px) {
+    .teacher-page-card {
+        padding: 1rem; /* Reduce padding on the main card */
+    }
+
+    .page-title {
+        font-size: 1.3rem;
+    }
+}

@@ -1,0 +1,223 @@
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* --- CSS Variables for Theming --- */
+:root {
+    --primary-bg: #F8F9FA;
+    --card-bg: #FFFFFF;
+    --text-primary: #212529;
+    --text-secondary: #6C757D;
+    --highlight-blue: #007BFF;
+    --green: #28a745;
+    --red: #dc3545;
+    --border-color: #e0e0e0;
+}
+
+/* --- Modal Styles --- */
+
+/* 1. Modal Overlay */
+/* The semi-transparent backdrop that covers the entire page. */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+/* 2. Modal Content */
+/* The main container for the form. */
+.modal-content {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    font-family: 'Poppins', sans-serif;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* 3. Modal Header */
+/* Contains the title and provides visual separation. */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* 4. Modal Body & Form Elements */
+/* Styles for the form groups, labels, and inputs. */
+.modal-body .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.modal-body label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.modal-body input,
+.modal-body select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box; /* Important for consistent sizing */
+    transition: border-color 0.2s;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+    outline: none;
+    border-color: var(--highlight-blue);
+}
+
+/* 5. Subject Assignment Section */
+/* The row with subject/standard dropdowns and the add button. */
+.subject-assignment-row {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    padding-right:2rem
+    /* align-items:center; */
+    /* justify-content: space-around;  */
+    /*Aligns button with bottom of inputs*/
+}
+
+.subject-assignment-row .form-group {
+    flex-grow: 1; 
+    /* Allows dropdowns to take available space */
+}
+
+.add-btn {
+    height: 35px; /* Matches input height */
+    width: 30px;
+    min-width: 45px;
+    border-radius: 8px;
+    background-color: var(--green);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+    background-color: #218838;
+}
+
+/* 6. List of Assigned Subjects */
+.assigned-subjects-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.assigned-subject-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: var(--primary-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.assigned-subject-item span {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.remove-subject-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--red);
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+/* 7. Modal Footer */
+/* Contains the final action buttons. */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.custom-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+}
+
+.custom-btn:hover {
+    opacity: 0.9;
+}
+
+.btn-save {
+    background-color: var(--highlight-blue);
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 500px) {
+    .subject-assignment-row {
+        flex-direction: column; /* Stack dropdowns and button */
+        align-items: stretch; /* Make all items full width */
+    }
+
+    .add-btn {
+        width: 100%;
+    }
+}
