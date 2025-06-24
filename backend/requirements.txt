@@ -1,1 +1,8 @@
-fastapi uvicorn transformers torch numpy scikit-learn sentence-transformers  fastapi 
+fastapi
+ uvicorn 
+ transformers 
+ torch 
+ numpy 
+ scikit-learn 
+ sentence-transformers  
+ fastapi 
