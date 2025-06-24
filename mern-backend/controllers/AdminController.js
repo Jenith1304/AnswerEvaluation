@@ -8,6 +8,7 @@ const { isSubjectInStandard } = require('../services/subjectAndStandard.service'
 const getStudents = require("../services/getStudents");
 const getStandardBasedTeacher = require("../services/getStandardBasedTeachers");
 const getStudentsBasedOnStandard = require("../services/getStandardBasedStudents");
+const getAllSubjects = require("../services/getAllSubjects");
 
 const createTeacher = async (req, res) => {
 
@@ -294,7 +295,16 @@ const deleteSubject = async (req, res) => {
 const getAllTeacher = async (req, res) => {
     try {
 
-        const response = await Teacher.find().select('-__v').populate('userId', 'name email')
+        const rawTeachers = await Teacher.find().select('-__v').populate('userId', 'name email').populate('subjects.subjectId', 'subject_name').populate('subjects.standardId', 'standard')
+
+        const response = rawTeachers.map(teacher => ({
+            _id: teacher._id,
+            userId: teacher.userId,
+            subjects: teacher.subjects.map(sub => ({
+                subjectName: sub.subjectId.subject_name,
+                standard: sub.standardId.standard
+            }))
+        }));
 
         if (!response)
             return res.status(204).json({ message: 'No Teacher Found', success: false })
@@ -412,46 +422,88 @@ const removeAssignedSubject = async (req, res) => {
 };
 
 
-const getStandardBasedTeachers = async(req,res)=>{
+const getStandardBasedTeachers = async (req, res) => {
     try {
 
         const standardId = req.params.standardId
-        if(!standardId)
-            return res.status(404).json({message : "StandardId is invalid",success : false})
+        if (!standardId)
+            return res.status(404).json({ message: "StandardId is invalid", success: false })
 
         const teachers = await getStandardBasedTeacher(standardId)
 
-        if(!teachers)
-            return res.status(204).json({message : "No Teacher Found",success : true})
+        if (!teachers)
+            return res.status(204).json({ message: "No Teacher Found", success: true })
 
-        return res.status(200).json({message : 'Teachers Found',success : true,data : teachers})
-        
+        return res.status(200).json({ message: 'Teachers Found', success: true, data: teachers })
+
     } catch (error) {
-        console.error("Error in getStandardBasedTreachercontroller : ",error)
+        console.error("Error in getStandardBasedTreachercontroller : ", error)
 
-        return res.status(500).json({message : 'Internal Server Error',success : false})
-    }    
+        return res.status(500).json({ message: 'Internal Server Error', success: false })
+    }
 }
 
-const getStandardBasedStudent = async(req,res)=>{
+const getStandardBasedStudent = async (req, res) => {
     try {
 
         const standardId = req.params.standardId
 
         const students = await getStudentsBasedOnStandard(standardId)
 
-        if(!students || students.length == 0)
-            return res.status(200).json({message : "No Student Found",success : true})
+        if (!students || students.length == 0)
+            return res.status(200).json({ message: "No Student Found", success: true })
 
-        return res.status(200).json({message : 'Student Found',success : true,data : students})
+        return res.status(200).json({ message: 'Student Found', success: true, data: students })
 
     } catch (error) {
-        console.error("Error in getStandardBasedStudentcontroller : ",error)
+        console.error("Error in getStandardBasedStudentcontroller : ", error)
 
-        return res.status(500).json({message : 'Internal Server Error',success : false})
+        return res.status(500).json({ message: 'Internal Server Error', success: false })
 
     }
 }
+const getAllSubjectController = async (req, res) => {
+    try {
 
-module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher,getStandardBasedStudent,getStandardBasedTeachers};
+        const response = await getAllSubjects()
+        if (!response)
+            return res.status(204).json({ message: 'No Subjects Found', success: false })
+
+        return res.status(200).json({ message: "Subjects Found", data: response, success: true })
+
+    } catch (error) {
+        console.error("error at subject controller: ", error)
+        return res.status(500).json({ message: "Internal Server Error", success: false })
+    }
+}
+
+const getTeacher = async (req, res) => {
+    try {
+        const teacherId = req.params.teacherId
+        let data = await Teacher.findById(teacherId).populate('userId', 'name email').populate('subjects.subjectId', 'subject_name').populate('subjects.standardId', 'standard')
+
+        data = {
+            _id: data._id,
+            name: data.userId.name,
+            email: data.userId.email,
+            subjects: data.subjects.map((sub) => {
+                return {
+                    subject_name: sub.subjectId.subject_name,
+                    standard: sub.standardId.standard
+                }
+            })
+        }
+
+        if (!data)
+            return res.status(204).json({ message: 'No teacher found', success: false })
+
+        return res.status(200).json({ data: data, message: "Teacher Found", success: true })
+
+    } catch (error) {
+        console.error("Error in getTeacher : ", error)
+        return res.status(500).json({ message: "Internal Server Error", success: false })
+    }
+}
+
+module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher };
 
