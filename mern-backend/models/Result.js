@@ -13,7 +13,9 @@ const ResultSchema = new mongoose.Schema({
                     min: [0, 'Obtained marks cannot be negative']
                 }
             }
-        ]
+        ],
+        default: []
+
     }
 }, { timestamps: true });
 

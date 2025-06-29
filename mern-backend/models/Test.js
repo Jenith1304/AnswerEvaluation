@@ -12,8 +12,8 @@ const TestSchema = new mongoose.Schema({
   questionIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
   studentsAttempted: {
     type: [{
-      studentId: { type: mongoose.Types.ObjectId, ref: "STUDENT" },
-      resultId: { type: mongoose.Types.ObjectId, ref: "RESULT" }
+      studentId: { type: mongoose.Types.ObjectId, ref: "Student" },
+      resultId: { type: mongoose.Types.ObjectId, ref: "Result" }
     }],
     default: []
   }
