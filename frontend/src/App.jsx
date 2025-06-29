@@ -11,6 +11,10 @@ import './App.css'
 import "./styles/Sidebar.css"
 import { FiMenu } from 'react-icons/fi';
 import TeacherDetail from './pages/TeacherDetail';
+import StudentDetail from './pages/StudentDetail';
+// import TestListPage from './pages/TestListPage';
+import TestDetail from './pages/TestDetail';
+import ResultPage from './pages/Resultpage';
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
@@ -29,7 +33,9 @@ function App() {
               <Route path="/teachers" element={<TeacherPage />} />
               <Route path="/teachers/:teacherId" element={<TeacherDetail />} />
               <Route path="/students" element={<StudentPage />} />
-
+              <Route path="/students/:studentId" element={<StudentDetail/>} />
+              <Route path="/test" element={<ResultPage />} />
+              <Route path="/test-details/:testId" element={<TestDetail />} />
             </Routes>
           </div>
         </div>

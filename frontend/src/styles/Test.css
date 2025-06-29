@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* --- General Setup --- */
+body {
+  background-color: #f4f7fa;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  margin: 0;
+}
+
+.test-list-page-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.list-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  width: 100%;
+  max-width: 1000px;
+  padding: 2rem;
+}
+
+/* --- List Header --- */
+.list-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 2rem;
+}
+
+.list-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #212529;
+}
+
+.header-icon {
+  font-size: 2rem;
+  color: #0099cc; /* Primary blue/teal */
+}
+
+/* --- Test Items --- */
+.test-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.test-item-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.test-item-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.test-item {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* --- Content inside item --- */
+.test-info {
+  flex-grow: 1;
+}
+.testInfo-right {
+ display: flex;
+  align-items: center;      /* Vertically center contents */
+  justify-content: flex-end;
+  gap: 2rem;
+  flex-shrink: 0;
+  min-width: 200px;  
+}
+
+.test-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 0.25rem;
+}
+
+.test-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.separator {
+  color: #ced4da;
+}
+
+.standard-pill {
+  background-color: #20c997; /* Teal color from image */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.teacher-info{
+        display: flex;
+    align-items: center;
+    /* text-align: center; */
+  gap: 0.5rem;
+  color: #495057;
+  font-weight: 500;
+  white-space: nowrap; /* Prevents text from wrapping */
+}
+.marks-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #495057;
+  font-weight: 500;
+  white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.teacher-info svg,
+.marks-info svg {
+  color: #adb5bd;
+}
+
+.link-arrow {
+  font-size: 1.5rem;
+  color: #adb5bd;
+  transition: color 0.2s ease;
+}
+
+.test-item-link:hover .link-arrow {
+  color: #0099cc; /* Highlight arrow on hover */
+}
+
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+  .teacher-info {
+    display: none; /* Hide teacher info on medium screens to save space */
+  }
+}
+
+@media (max-width: 768px) {
+  .list-card {
+    padding: 1.5rem;
+  }
+  .test-item {
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    padding: 1rem;
+  }
+  .test-info {
+    width: 100%; /* Take full width on top */
+    margin-bottom: 0.75rem;
+  }
+  .marks-info {
+    flex-grow: 1; /* Allow marks to take available space */
+  }
+  .teacher-info {
+    display: flex; /* Bring back teacher info on small screens */
+    width: 100%;
+    order: 3; /* Move to the bottom */
+    color: #6c757d;
+    font-weight: 400;
+  }
+}
+
+@media (max-width: 480px) {
+    .list-header h2 {
+        font-size: 1.5rem;
+    }
+    .test-title {
+        font-size: 1.1rem;
+    }
+}

@@ -4,8 +4,7 @@ const getStudents = async()=>
 {
     try {
         
-        const response = await Student.find().select("userId standardId rollNumber")
-                        .populate('userId','name email').populate('standardId','standard')
+        const response = await Student.find().populate('userId','name email').populate('standardId','standard')
 
         return response
 
