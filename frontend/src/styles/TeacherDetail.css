@@ -1,115 +1,224 @@
 .detail-container {
-    padding: 2rem;
-    background-color: #f8f9fa; /* Light background for the page */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    position: relative;
+    padding: 3rem 1rem;
+    /* background: linear-gradient(to right, #f5f7fa, #c3cfe2); */
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     min-height: 100vh;
+    overflow: hidden; /* Hide outer scrollbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scrollbar-width: 0;
 }
 
 .back-button {
-    background: none;
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    background: rgba(255, 255, 255, 0.3);
     border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
     font-size: 1rem;
-    color: #555;
+    color: #444;
     cursor: pointer;
-    margin-bottom: 1.5rem;
     font-weight: 500;
-}
-
-.back-button:hover {
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    z-index: 10;
+    background-color: rgba(0, 123, 255, 0.2);
     color: #007bff;
 }
 
-.teacher-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-    overflow: hidden;
-    max-width: 800px;
-    margin: 0 auto;
+.back-button:hover {
+    background-color: rgba(92, 151, 214, 0.2);
+    color: #007bff;
 }
 
+/* Fancy Teacher Card */
+.teacher-card {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 900px;
+    width: 100%;
+    color: #1b1b1b;
+    animation: fadeIn 0.6s ease;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.3s ease;
+    max-height: 80vh;            /* Scrollable height limit */
+    overflow-y: auto;            /* Scroll vertically if content overflows */
+    overflow-x: hidden;          /* No horizontal scroll */
+}
+
+/* Hide scrollbar - Webkit */
+.teacher-card::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar - Firefox */
+.teacher-card {
+    scrollbar-width: none;
+}
+
+/* Hide scrollbar - IE/Edge Legacy */
+.teacher-card {
+    -ms-overflow-style: none;
+}
+
+.teacher-card:hover {
+    transform: translateY(-5px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Header */
 .card-header {
     display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
     justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid #dee2e6;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .card-header {
+        flex-direction: row;
+        align-items: center;
+    }
 }
 
 .teacher-name {
+    font-size: 2.4rem;
+    font-weight: bold;
     margin: 0;
-    font-size: 2rem;
-    color: #212529;
+    background: linear-gradient(to right, #0f2027, #2c5364);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .teacher-email {
-    margin: 5px 0 0;
-    color: #6c757d;
+    color: #555;
+    font-size: 1rem;
 }
 
-.actions .btn {
-    padding: 10px 20px;
+/* Buttons */
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.7rem 1.4rem;
+    border-radius: 30px;
     border: none;
-    border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
-    font-weight: 500;
-    margin-left: 10px;
-    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .btn-update {
-    background-color: #0d6efd;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
     color: white;
 }
 .btn-update:hover {
-    background-color: #0b5ed7;
+    background: linear-gradient(to right, #0072ff, #00c6ff);
 }
 
 .btn-delete {
-    background-color: #dc3545;
+    background: linear-gradient(to right, #ff512f, #dd2476);
     color: white;
 }
 .btn-delete:hover {
-    background-color: #bb2d3b;
+
+    background: linear-gradient(to right, #dd2476, #ff512f);
 }
 
+/* Card Body */
 .card-body {
-    padding: 2rem;
+    margin-top: 1rem;
 }
 
 .card-body h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #343a40;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    color: #212529;
 }
 
+/* Subjects list */
 .subjects-list {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .subject-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 1rem;
-    border-bottom: 1px solid #f1f1f1;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.3s ease;
 }
 
-.subject-item:last-child {
-    border-bottom: none;
+.subject-item:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .subject-item-name {
-    font-weight: 500;
-    color: #343a40;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #2c3e50;
 }
 
 .subject-item-standard {
-    background-color: #e9ecef;
-    color: #495057;
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.9rem;
+    background: #17c3b2;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Tweaks */
+@media (max-width: 600px) {
+    .teacher-card {
+        padding: 1.5rem;
+        max-height: 85vh;
+    }
+
+    .teacher-name {
+        font-size: 2rem;
+    }
+
+    .btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .back-button {
+        top: 1rem;
+        left: 1rem;
+        font-size: 0.9rem;
+    }
 }

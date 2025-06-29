@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* --- General Setup --- */
+body {
+  background-color: #f4f7fa;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+.test-page-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.details-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  width: 100%;
+  max-width: 900px;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+/* --- Shared Button Styles --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 30px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-update {
+  background: linear-gradient(45deg, #00B4DB, #0083B0);
+}
+
+.btn-delete {
+  background: linear-gradient(45deg, #FF512F, #DD2476);
+}
+
+/* --- Card Header (Teacher Info) --- */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.teacher-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #212529;
+}
+
+.teacher-info p {
+  margin: 0;
+  color: #6c757d;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* --- Assigned Test Details Header --- */
+.assigned-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.assigned-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.assigned-title-group h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.title-icon {
+    font-size: 1.5rem;
+    color: #495057;
+}
+
+.assigned-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.standard-pill {
+  background-color: #20c997; /* Teal color from image */
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.result-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #0099cc; /* Primary blue from update button */
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.result-link:hover {
+  color: #0077a2;
+}
+
+/* --- Questions List --- */
+.questions-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.question-item {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  border: 1px solid #e9ecef;
+}
+
+.question-content {
+  flex-grow: 1;
+}
+
+.question-text {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #212529;
+  line-height: 1.5;
+}
+
+.question-details p {
+  margin: 0.5rem 0 0 0;
+  color: #495057;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.question-details span {
+  font-weight: 600;
+  color: #343a40;
+  margin-right: 0.5rem;
+}
+
+.question-actions .btn-update-small {
+  background: linear-gradient(45deg, #00B4DB, #0083B0);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: transform 0.2s ease;
+}
+
+.question-actions .btn-update-small:hover {
+  transform: scale(1.05);
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  .details-card {
+    padding: 1.5rem;
+  }
+
+  .card-header, .assigned-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .assigned-meta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .question-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .question-actions {
+    margin-top: 1rem;
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-actions .btn {
+        width: 100%;
+    }
+}

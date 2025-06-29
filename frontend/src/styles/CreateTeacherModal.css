@@ -1,121 +1,109 @@
 /* --- Google Font Import --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* --- CSS Variables for Theming --- */
 :root {
-    --primary-bg: #F8F9FA;
-    --card-bg: #FFFFFF;
-    --text-primary: #212529;
-    --text-secondary: #6C757D;
-    --highlight-blue: #007BFF;
-    --green: #28a745;
-    --red: #dc3545;
-    --border-color: #e0e0e0;
+  --primary-bg: #f9fafb;
+  --card-bg: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --highlight-blue: #3b82f6;
+  --green: #10b981;
+  --red: #ef4444;
+  --border-color: #d1d5db;
+  --radius: 12px;
 }
 
-/* --- Modal Styles --- */
-
-/* 1. Modal Overlay */
-/* The semi-transparent backdrop that covers the entire page. */
+/* --- Overlay --- */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 1rem;
-    animation: fadeIn 0.3s ease;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
 }
 
-/* 2. Modal Content */
-/* The main container for the form. */
+/* --- Modal Content --- */
 .modal-content {
-    background-color: var(--card-bg);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-    font-family: 'Poppins', sans-serif;
-    animation: slideIn 0.3s ease-out;
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 600px;
+  font-family: 'Poppins', sans-serif;
+  animation: slideIn 0.3s ease-out;
 }
 
-/* 3. Modal Header */
-/* Contains the title and provides visual separation. */
+/* --- Header --- */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-    margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .modal-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-/* 4. Modal Body & Form Elements */
-/* Styles for the form groups, labels, and inputs. */
+/* --- Body & Inputs --- */
 .modal-body .form-group {
-    margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .modal-body label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .modal-body input,
 .modal-body select {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-    box-sizing: border-box; /* Important for consistent sizing */
-    transition: border-color 0.2s;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
 }
-
+.modal-body select {
+    width: 100%;
+    min-width: 170px;
+}
 .modal-body input:focus,
 .modal-body select:focus {
-    outline: none;
-    border-color: var(--highlight-blue);
+  outline: none;
+  border-color: var(--highlight-blue);
 }
 
-/* 5. Subject Assignment Section */
-/* The row with subject/standard dropdowns and the add button. */
+/* --- Assignment Row --- */
 .subject-assignment-row {
-    width: 100%;
     display: flex;
-    gap: 0.5rem;
-    padding-right:2rem
-    /* align-items:center; */
-    /* justify-content: space-around;  */
-    /*Aligns button with bottom of inputs*/
+    align-items:center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
 .subject-assignment-row .form-group {
-    flex-grow: 1; 
-    /* Allows dropdowns to take available space */
+  flex: 1;
+  min-width: 170px;
 }
 
+/* --- Add Button --- */
 .add-btn {
-    height: 35px; /* Matches input height */
-    width: 30px;
-    min-width: 45px;
+    height: 50px;
+    padding: 0 16px;
     border-radius: 8px;
     background-color: var(--green);
     color: white;
@@ -125,99 +113,107 @@
     justify-content: center;
     align-items: center;
     transition: background-color 0.2s;
+    font-size: 1rem;
 }
 
 .add-btn:hover {
     background-color: #218838;
 }
 
-/* 6. List of Assigned Subjects */
+/* .add-btn:hover {
+  background-color: #059669;
+} */
+
+/* --- Assigned List --- */
 .assigned-subjects-list {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .assigned-subject-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    background-color: var(--primary-bg);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius);
 }
 
 .assigned-subject-item span {
-    color: var(--text-primary);
-    font-weight: 500;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .remove-subject-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--red);
-    padding: 0;
-    display: flex;
-    align-items: center;
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
-/* 7. Modal Footer */
-/* Contains the final action buttons. */
+/* --- Footer --- */
 .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .custom-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    font-size: 1rem;
-    transition: opacity 0.2s;
+  padding: 0.7rem 1.3rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
 }
 
 .custom-btn:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
-.btn-save {
-    background-color: var(--highlight-blue);
-    color: white;
+.custom-btn:not(.btn-cancel) {
+  background-color: var(--highlight-blue);
+  color: white;
 }
 
 .btn-cancel {
-    background-color: #6c757d;
-    color: white;
+  background-color: #6b7280;
+  color: white;
 }
 
 /* --- Animations --- */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideIn {
-    from { transform: translateY(-30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-/* --- Responsive Design --- */
+/* --- Responsive --- */
 @media (max-width: 500px) {
-    .subject-assignment-row {
-        flex-direction: column; /* Stack dropdowns and button */
-        align-items: stretch; /* Make all items full width */
-    }
+  .subject-assignment-row {
+    flex-direction: column;
+    /* align-items: stretch; */
+  }
 
-    .add-btn {
-        width: 100%;
-    }
+  .add-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .modal-content {
+    padding: 1.2rem;
+  }
 }

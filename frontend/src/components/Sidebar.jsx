@@ -3,6 +3,7 @@ import {
     FiBell, FiBookOpen, FiCalendar, FiDollarSign, FiHome,
     FiMessageSquare, FiUser, FiUserCheck, FiUsers, FiX
 } from 'react-icons/fi';
+import { MdOutlineAssignment } from "react-icons/md";
 import { NavLink } from 'react-router-dom';
 import '../styles/Sidebar.css';
 
@@ -35,7 +36,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <SidebarLink to="/" icon={<FiHome />} label="Dashboard" />
                     <SidebarLink to="/teachers" icon={<FiUsers />} label="Teachers" />
                     <SidebarLink to="/students" icon={<FiUserCheck />} label="Students" />
-                    <SidebarLink to="/attendance" icon={<FiCalendar />} label="Attendance" />
+                    <SidebarLink to="/test" icon={<MdOutlineAssignment />} label="Test" />
                     <SidebarLink to="/finance" icon={<FiDollarSign />} label="Finance" />
                     <SidebarLink to="/notice" icon={<FiBell />} label="Notice" />
                     <SidebarLink to="/library" icon={<FiBookOpen />} label="Library" />

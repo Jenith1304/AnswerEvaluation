@@ -12,7 +12,7 @@ const client = new vision.ImageAnnotatorClient();
 
 const createTest = async (req, res) => {
     try {
-        const teacherId = req.user.id;
+        const teacherId = await Teacher.findOne({ userId: req.user.id });
         const {
             // Provided directly
             subjectId,
@@ -29,7 +29,7 @@ const createTest = async (req, res) => {
         }
 
         // 🔍 Validate teacher existence
-        const teacher = await Teacher.findById(teacherId);
+        const teacher = await Teacher.findOne({ _id: teacherId });
         if (!teacher) {
             return res.status(403).json({ message: "Invalid teacher ID", success: false });
         }
@@ -51,7 +51,7 @@ const createTest = async (req, res) => {
             standardId,
             testTitle: testTitle.trim(),
             testDate: new Date(testDate),
-            totalMarks
+            // totalMarks
         });
 
         if (duplicateTest) {
@@ -83,7 +83,7 @@ const createTest = async (req, res) => {
                 questionIds.push(newQ._id);
             }
         }
-        const totalMarks = questions.reduce((sum, q) => sum + q.marks, 0);
+        const totalMarks = questions.reduce((sum, q) => parseInt(sum) + parseInt(q.marks), 0);
 
         // ✅ Create Test
         const newTest = await Test.create({
@@ -111,14 +111,39 @@ const createTest = async (req, res) => {
 const getAllTests = async (req, res) => {
     try {
         const tests = await Test.find()
-            .populate("teacherId", "userId") // Only populate `userId` from Teacher
-            .populate("subjectId", "subject_name") // Only get subject_name from Subject
-            .populate("standardId", "standard") // Only get standard name
-            .populate("questionIds", "questionText referenceAnswer marks"); // Get detailed question info
+            .populate({
+                path: "teacherId",
+                select: "userId",
+                populate: { path: "userId", select: "name email" }
+            })
+            // .populate("studentsAttempted.studentId.userId", "name")
+            .populate({
+                path: "studentsAttempted.studentId",
+                select: "userId",
+                populate: { path: "userId", select: "name" }
+            })
+            // .populate("studentsAttempted.resultId", "result")
+            .populate({
+                path: "studentsAttempted.resultId",
+                select: "result",
+                populate: { path: "result.questionId", select: "questionText" }
+            })
+            .populate("subjectId", "subject_name")
+            .populate("standardId", "standard")
+            .populate("questionIds", "questionText referenceAnswer marks").select(
+                "-createdAt -updatedAt -__v"
+            );
+
+        // 🔁 Format if you want flat teacherId and name
+        const formattedTests = tests.map(test => ({
+            ...test.toObject(),
+            teacherId: test.teacherId,
+            teacherName: test.teacherId?.userId?.name
+        }));
 
         return res.status(200).json({
             message: "All tests fetched",
-            tests,
+            tests: formattedTests,
             success: true
         });
     } catch (err) {
@@ -195,12 +220,39 @@ const uploadAnswerSheet = async (req, res) => {
             return res.status(400).json({ message: "No file uploaded", success: false });
         }
 
-        const newAnswer = await AnswerSheetPDF.create({
-            studentId,
-            testId,
-            fileUrl: req.file.path,
-            uploadedBy: teacherId
-        });
+        // const newAnswer = await AnswerSheetPDF.create({
+        //     studentId,
+        //     testId,
+        //     fileUrl: req.file.path,
+        //     uploadedBy: teacherId
+        // });
+        const newAnswer = await AnswerSheetPDF.findOneAndUpdate(
+            { studentId, testId },
+            {
+                $set: {
+                    studentId,
+                    testId,
+                    fileUrl: req.file.path,
+                    uploadedBy: teacherId
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+        if (newAnswer) {
+            const test = await Test.findById(testId);
+
+            let resultId = await Result.findOne({ studentId, testId })
+
+            if (!resultId) {
+                resultId = await Result.create({ testId, studentId })
+                test.studentsAttempted.push({ studentId, resultId })
+                await test.save()
+
+            }
+
+
+        }
 
         return res.status(201).json({
             message: "Answer sheet uploaded successfully",
@@ -506,11 +558,14 @@ const evaluateResult = async (req, res) => {
             delete item.similarity_score;
             delete item.feedback;
         })
-        Result.create({
+        Result.findOneAndUpdate({
             testId,
             studentId,
-            result
-        }).then(() => { return res.status(200).json({ message: 'OCR completed successfully.', textOutput: extractedAnswers, totalPages, imageUrls, finalRes, result }); })
+        }, {
+            $set: {
+                result
+            },
+        }, { upsert: true }).then(() => { return res.status(200).json({ message: 'OCR completed successfully.', textOutput: extractedAnswers, totalPages, imageUrls, finalRes, result }); })
             .catch(() => { return res.status(400).json({ error: "Result not created " }); })
 
     } catch (err) {
