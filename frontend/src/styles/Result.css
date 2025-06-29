@@ -1,0 +1,181 @@
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* --- Global Styles & Container --- */
+body {
+  background-color: #eef2f5; /* Light grey background for the page */
+  font-family: 'Poppins', sans-serif;
+  color: #343a40;
+  margin: 0;
+  padding: 0;
+}
+
+.test-list-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* --- Main Card --- */
+.test-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 900px;
+  padding: 24px 32px;
+}
+
+/* --- Card Header --- */
+.test-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 24px;
+}
+
+.header-icon {
+  font-size: 24px;
+  color: #36a2eb; /* A nice, modern blue */
+}
+
+.header-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #212529;
+}
+
+/* --- Test Items List --- */
+.test-items-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- Clickable Link Wrapper for Each Item --- */
+.test-item-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  transition: all 0.2s ease-in-out;
+}
+
+.test-item-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  border-color: #adb5bd;
+}
+
+.test-item-content {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* --- Left Side: Title & Meta Info --- */
+.test-info {
+  flex-grow: 1;
+}
+
+.test-title {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.test-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subject-tag {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.standard-pill {
+  background-color: #20c997;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* --- Right Side: Details & Arrow --- */
+.test-details {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0; /* Prevents this section from shrinking */
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.detail-item svg {
+  color: #868e96;
+}
+
+.arrow-icon {
+  color: #adb5bd;
+  transition: color 0.2s ease;
+}
+
+.test-item-link:hover .arrow-icon {
+  color: #36a2eb; /* Match header icon color on hover */
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  .test-card {
+    padding: 20px;
+  }
+  .test-item-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .test-details {
+    width: 100%;
+    justify-content: space-between;
+  }
+  /* Move arrow to the end when stacking vertically */
+  .arrow-icon {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-details {
+    flex-wrap: wrap; /* Allow details to wrap on very small screens */
+    gap: 16px;
+  }
+  .teacher-info,
+  .marks-info {
+    font-size: 14px;
+  }
+  .test-title {
+    font-size: 16px;
+  }
+  .header-title {
+    font-size: 20px;
+  }
+}
