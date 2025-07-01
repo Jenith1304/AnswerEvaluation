@@ -267,7 +267,7 @@ const uploadAnswerSheet = async (req, res) => {
 
 
 const updateQuestionInTest = async (req, res) => {
-    try {
+    try {        
         const { testId, questionId } = req.params;
         const { questionText, referenceAnswer, marks } = req.body;
 

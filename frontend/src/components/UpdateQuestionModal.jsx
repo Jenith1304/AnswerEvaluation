@@ -5,20 +5,23 @@ const UpdateQuestionModal = ({ show, onClose, onUpdate, questionData }) => {
     const [editedAnswer, setEditedAnswer] = useState("");
     const [editedMarks, setEditedMarks] = useState("");
 
+
     const modalRef = useRef();
 
     // Update internal state if the questionData prop changes
     useEffect(() => {
-        setEditedQuestion("");
-        setEditedAnswer("");
-        setEditedMarks("");
+        setEditedQuestion(questionData.questionText);
+        setEditedAnswer(questionData.referenceAnswer);
+        setEditedMarks(questionData.marks);
+
+
     }, [questionData]);
 
     // Handle clicking outside the modal to close it
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onClose();
+                // onClose();
             }
         };
         if (show) {
@@ -36,9 +39,10 @@ const UpdateQuestionModal = ({ show, onClose, onUpdate, questionData }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         onUpdate({
-            question: editedQuestion,
-            answer: editedAnswer,
+            questionText: editedQuestion,
+            referenceAnswer: editedAnswer,
             marks: editedMarks,
+            _id : questionData._id
         });
     };
 
@@ -86,7 +90,7 @@ const UpdateQuestionModal = ({ show, onClose, onUpdate, questionData }) => {
                         <button type="button" className="btn btn-secondary" onClick={onClose}>
                             Cancel
                         </button>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="btn btn-primary" onClick={(e)=>handleSubmit(e)}>
                             Save Changes
                         </button>
                     </div>

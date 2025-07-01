@@ -3,7 +3,8 @@ import '../styles/Test.css';
 import { FiBookOpen, FiUser, FiAward, FiChevronRight } from 'react-icons/fi';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import Toast from '../components/Toast';
 // --- Mock Data ---
 // In a real app, this data would come from an API.
 
@@ -50,6 +51,12 @@ const testListData = [
 const TestListPage = () => {
     const [testListData, setTestListData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const location = useLocation()
+
+    const [toast,setToast] = useState(location.state?.toast || null)
+
+
+
     useEffect(() => {
 
         const fetchTests = async () => {
@@ -93,11 +100,11 @@ const TestListPage = () => {
 
                 {/* --- Test Items Container --- */}
                 <div className="test-items-container">
-                    {testListData.map((test) => (
+                    {testListData.map((test,index) => (
                         <Link
                             key={test._id}
                             to={`/test-details/${test._id}`}
-                            state={{ test }} // ✅ pass state here
+                            state={{ test}} // ✅ pass state here
                             className="test-item-link"
                         >
                             <div className="test-item">
@@ -129,6 +136,7 @@ const TestListPage = () => {
                         </Link>
                     ))}
                 </div>
+                {toast ? <Toast message={toast.message} isSuccess={toast.isSuccess} /> : null}
             </div>
         </div>
     );
