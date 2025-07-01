@@ -168,13 +168,13 @@ const TeacherPage = () => {
                                     <td>{teacher.name}</td>
                                     <td>
                                         {teacher.subjects.map((obj, index) => (
-                                            <span key={index} className="subject-badge">{obj.subjectName}</span>
+                                            <span key={index} style={{backgroundColor:'#A0D7E7'}} className="subject-badge">{obj.subjectName}</span>
                                         ))}
                                     </td>
                                     {/* <td>{teacher.standard}</td> */}
                                     <td>
                                         {teacher.subjects.map((obj, index) => (
-                                            <span key={index} className="subject-badge">{obj.standard}</span>
+                                            <span key={index} style={{backgroundColor:'#FDD874'}} className="subject-badge">{obj.standard}</span>
                                         ))}
                                     </td>
                                     <td className="arrow-cell">{'>'}</td>

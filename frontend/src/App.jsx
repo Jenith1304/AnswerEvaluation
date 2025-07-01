@@ -15,6 +15,8 @@ import TestPage from './pages/TestDetail';
 import TestListPage from './pages/TestListPage';
 import TestDetail from './pages/TestDetail';
 import ResultPage from './pages/ResultPage';
+import StudentDetail from './pages/StudentDetail';
+// import TestListPage from './pages/TestListPage';
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
@@ -36,6 +38,9 @@ function App() {
               <Route path="/test" element={<TestListPage />} />
               <Route path="/test-details/:testId" element={<TestDetail />} />
               <Route path="/result/:testId" element={<ResultPage />} />
+              <Route path="/students/:studentId" element={<StudentDetail/>} />
+              {/* <Route path="/test" element={<ResultPage />} /> */}
+              {/* <Route path="/test-details/:testId" element={<TestDetail />} /> */}
             </Routes>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/TestDetail.css';
 import { FiEdit, FiFileText, FiClipboard, FiTrash2 } from 'react-icons/fi';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, replace, useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import Toast from '../components/Toast';
 import UpdateQuestionModal from '../components/UpdateQuestionModal';
 
@@ -9,7 +9,12 @@ import UpdateQuestionModal from '../components/UpdateQuestionModal';
 const TestDetail = () => {
 
     const location = useLocation();
-    const test = location.state?.test;
+    // const test = location.state?.test;
+
+    const [test,setTest] = useState(location.state?.test)
+    const [questionInfo,setQuestionInfo] = useState({})
+    const [selectedIndex,setSelectedIndex] = useState(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         console.log("Received test:", test);  // check here
@@ -49,24 +54,35 @@ const TestDetail = () => {
     });
 
     // Function to handle the update from the modal
-    const handleUpdateQuestion = (updatedData) => {
+    const handleUpdateQuestion =async  (updatedData) => {
         // In a real app, you would make an API call here
         console.log('Updated Data:', updatedData);
+      try{
 
-        // setQuestionData(updatedData);
-        setIsModalOpen(false); // Close the modal
+      
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/updateQuestion/${test._id}/question/${updatedData._id}`, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body : JSON.stringify(updatedData)
+                });
+                 const data = await response.json()
+                if (!response.ok || data.success == false)
+                    throw new Error(data.message)               
+                console.log(data.question)
+                navigate('/test',{replace : true,state :{toast :{message : data.message,isSuccess : data.success}}})
+                // here update the state required index
+                // test.questionIds[index] = updatedData
 
-        // Show a success toast
-        setToastInfo({
-            show: true,
-            message: 'Question updated successfully!',
-            isSuccess: true,
-        });
-
-        // Hide the toast after 3 seconds
-        setTimeout(() => {
-            setToastInfo({ show: false, message: '', isSuccess: false });
-        }, 3000);
+                // setTest(test)
+            }
+            catch(err)
+            {
+                console.log(err);
+            }
+       
     };
     return (
 
@@ -134,12 +150,16 @@ const TestDetail = () => {
                                 </div>
                             </div>
                             <div className="question-actions">
-                                <button className="btn btn-update-small" onClick={() => setIsModalOpen(true)} >
+                                <button className="btn btn-update-small" onClick={() => {setIsModalOpen(true)
+                                    setQuestionInfo(question)
+                                    setSelectedIndex(index)
+                                } }>
                                     <FiEdit /> Update
                                 </button>
                             </div>
                             <UpdateQuestionModal
                                 show={isModalOpen}
+                                questionData= {questionInfo}
                                 onClose={() => setIsModalOpen(false)}
                                 onUpdate={handleUpdateQuestion}
                             // questionData={questionData}

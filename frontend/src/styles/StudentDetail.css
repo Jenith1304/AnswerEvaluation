@@ -1,0 +1,175 @@
+/* General Container */
+.detail-container {
+    padding: 4rem 2rem;
+    background-color: #f9fbfd;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Back Button */
+.back-button {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    color: #6366f1;
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    text-decoration: underline;
+}
+
+/* Card */
+.student-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeIn 0.4s ease-in;
+}
+
+/* Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.student-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.student-email {
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-update {
+    background: #6366f1;
+    color: white;
+}
+.btn-update:hover {
+    background: #4f46e5;
+}
+
+.btn-delete {
+    background: #f87171;
+    color: white;
+}
+.btn-delete:hover {
+    background: #ef4444;
+}
+
+/* Body */
+.card-body h3 {
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+}
+
+.details-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.detail-item {
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s ease;
+}
+
+.detail-item:hover {
+    background: #e2e8f0;
+}
+
+.detail-item-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.detail-item-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1f2937;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.detail-item-value.secondary {
+    color: #374151;
+    background: #CDEEFF;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+}
+
+.modal-placeholder {
+    background: white;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1rem;
+    color: #111827;
+    z-index: 50;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -323,10 +323,25 @@ const getAllTeacher = async (req, res) => {
 const getAllStudents = async (req, res) => {
     try {
 
-        const response = await getStudents()
+        let response = await getStudents()
+
+        console.log(response)
 
         if (!response)
             return res.status(204).json({ message: 'No Student Found', success: false })
+
+         response = response.map(student => ({
+            dob: student.dob,
+            gender: student.gender,
+            rollNumber: student.rollNumber,
+            name: student.userId.name,
+            email: student.email,
+            standard: student.standardId.standard,
+            _id: student._id,
+        }));
+
+
+
 
         return res.status(200).json({ message: "Students Found", success: true, data: response })
 
@@ -337,6 +352,7 @@ const getAllStudents = async (req, res) => {
 
     }
 }
+
 const assignSubjectToTeacher = async (req, res) => {
     try {
         const teacherId = req.params.id;
@@ -552,5 +568,91 @@ const deleteTeacher = async (req, res) => {
         });
     }
 };
-module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, deleteTeacher };
+// module.exports = { createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, deleteTeacher };
+const getStudent = async (req, res) => {
+    try {
+        const studentID = req.params.studentId
+        let response = await Student.findById(studentID).populate('standardId', 'standard').populate('userId', 'name email')
+
+        if (!response)
+            return res.status(204).json({ message: 'No student Found', success: false })
+
+        response = response.toObject()
+        response = {
+            ...response,
+            name: response.userId.name,
+            email: response.userId.email,
+            standard: response.standardId.standard,
+            standardId: response.standardId._id,
+            userId: response.userId._id
+        }
+
+        return res.status(200).json({ message: 'Stduent Found', data: response, success: true })
+
+    } catch (error) {
+        console.error("error in getStudentController : ", error)
+        return res.status(500).json({ message: "Internal Server Error", success: false })
+    }
+}
+
+const deleteStudent = async (req, res) => {
+    try {
+        const { studentId } = req.body
+
+        const response = await Student.findOneAndDelete({ _id: studentId })
+
+        if (!response)
+            throw new Error("Can not Delete an Student")
+
+        const userDeleteRes = await User.findOneAndDelete({_id: response.userId})
+
+        if (!userDeleteRes)
+            throw new Error("Can not Delete an Student")
+
+        return res.status(200).json({ message: "Deleted Successfully" ,success : true})
+
+    } catch (error) {
+        console.error("Error in DeleteStudent : ", error)
+        return res.status(500).json({ message: "Internal Server Error" ,success : false})
+    }
+}
+
+const updateStudent = async (req, res) => {
+    try {
+        const { _id, name, email, rollNumber, gender, dob, standard } = req.body;
+
+        if (!_id || !rollNumber || !gender || !dob || !standard) {
+            return res.status(400).json({ message: "Please provide all required fields", success: false });
+        }
+
+        const updatedStudent = await Student.findOneAndUpdate(
+            { _id: _id }, // filter
+            {
+                $set: {
+                    rollNumber,
+                    gender,
+                    dob: dob, // convert to Date object if needed
+                    standard
+                }
+            },
+            {
+                new: true,    // return the updated document
+                upsert: false // set to true if you want to create if not found
+            }
+        );
+
+
+        if (!updatedStudent) {
+            return res.status(404).json({ message: "Student not found", success: false });
+        }
+
+        return res.status(200).json({ message: "Updated Successfully", success: true, student: updatedStudent });
+
+    } catch (error) {
+        console.error("Error in UpdateStudent:", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+
+module.exports = {updateStudent, deleteStudent, createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, getStudent,deleteTeacher};
 
