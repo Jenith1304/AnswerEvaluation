@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <SidebarLink to="/message" icon={<FiMessageSquare />} label="Message" />
 
                     <p className="sidebar-section">Other</p>
-                    <SidebarLink to="/profile" icon={<FiUser />} label="Profile" />
+                    <SidebarLink to="/login" icon={<FiUser />} label="Profile" />
                 </nav>
             </aside>
         </>

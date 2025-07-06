@@ -1,0 +1,31 @@
+.pdf-viewer-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* max-width: 90%; */
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pdf-header {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pdf-viewer-panel {
+    max-height: 70vh;
+    padding: 0.5rem;
+  }
+
+  .pdf-header h2 {
+    font-size: 1rem;
+  }
+}

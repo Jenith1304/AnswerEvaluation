@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { FiBookOpen, FiUser, FiAward, FiChevronRight } from 'react-icons/fi';
 import '../styles/Result.css';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // --- Mock Data ---
 // In a real application, this data would be fetched from an API.
@@ -52,9 +52,10 @@ const ResultPage = () => {
     const location = useLocation();
     const result = location.state?.result;
 
-    useEffect(() => {
-        console.log("Received test:", result);  // check here
-    }, []);
+    // useEffect(() => {
+    //     console.log("Received test:", result);  // check here
+    // }, []);
+    // const [marksheet,setMarksheet]=useState(result);
     // In a real app, you would have state for tests, loading, and errors.
     // const [tests, setTests] = useState([]);
     // const [loading, setLoading] = useState(true);
@@ -72,14 +73,11 @@ const ResultPage = () => {
                 {/* --- List of Test Items --- */}
                 <div className="test-items-wrapper">
                     {result.studentsAttempted.map((test, index) => (
-                        <a
+                        <Link
                             key={index}
-                            href={`/tests/${index}`} // The entire item is a clickable link
+                            to={`/marksheet`}
+                            state={{ standard: result.standard, subjectName: result.subjectName, resultId: test.resultId, studentId: test.studentId, testId: result.testId, questionIds: result.questionIds }}// The entire item is a clickable link
                             className="test-item-link"
-                            onClick={(e) => {
-                                e.preventDefault(); // Prevents page reload for this demo
-                                alert(`Navigating to details for ${test.title}`);
-                            }}
                         >
                             <div className="test-item-content">
                                 {/* Left side: Title and tags */}
@@ -113,11 +111,11 @@ const ResultPage = () => {
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </Link>
                     ))}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

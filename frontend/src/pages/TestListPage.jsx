@@ -5,47 +5,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Toast from '../components/Toast';
-// --- Mock Data ---
-// In a real app, this data would come from an API.
 
-const testListData = [
-    {
-        id: 'sci-g9-01',
-        testName: 'Mid-Term Examination',
-        subjectName: 'Science',
-        standardName: 'Standard 9',
-        teacherName: 'Teacher 2',
-        teacherId: 't002',
-        totalMarks: 100,
-    },
-    {
-        id: 'math-g7-01',
-        testName: 'Algebra & Geometry Test',
-        subjectName: 'Mathematics',
-        standardName: 'Standard 7',
-        teacherName: 'Teacher 5',
-        teacherId: 't005',
-        totalMarks: 50,
-    },
-    {
-        id: 'hist-g9-02',
-        testName: 'Final Assessment',
-        subjectName: 'Social Science',
-        standardName: 'Standard 9',
-        teacherName: 'Teacher 2',
-        teacherId: 't002',
-        totalMarks: 80,
-    },
-    {
-        id: 'eng-g8-03',
-        testName: 'Grammar and Composition',
-        subjectName: 'English',
-        standardName: 'Standard 8',
-        teacherName: 'Teacher 3',
-        teacherId: 't003',
-        totalMarks: 75,
-    },
-];
 
 
 const TestListPage = () => {
@@ -53,7 +13,7 @@ const TestListPage = () => {
     const [loading, setLoading] = useState(true);
     const location = useLocation()
 
-    const [toast,setToast] = useState(location.state?.toast || null)
+    const [toast, setToast] = useState(location.state?.toast || null)
 
 
 
@@ -70,7 +30,7 @@ const TestListPage = () => {
                 if (!response.ok || data.success == false)
                     throw new Error(data.message)
                 setTestListData(data.tests)
-                console.log(data.tests)
+                // console.log(data.tests)
                 setLoading(false);
 
             } catch (error) {
@@ -100,11 +60,11 @@ const TestListPage = () => {
 
                 {/* --- Test Items Container --- */}
                 <div className="test-items-container">
-                    {testListData.map((test,index) => (
+                    {testListData.map((test, index) => (
                         <Link
                             key={test._id}
                             to={`/test-details/${test._id}`}
-                            state={{ test}} // ✅ pass state here
+                            state={{ test }}
                             className="test-item-link"
                         >
                             <div className="test-item">

@@ -28,7 +28,7 @@ const Toast = ({ message, isSuccess = true, duration = 3000 }) => {
         <>
             <div style={toastStyle}>
                 {message}
-            </div>;
+            </div>
         </>
     )
 };

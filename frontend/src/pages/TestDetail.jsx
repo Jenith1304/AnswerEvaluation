@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/TestDetail.css';
 import { FiEdit, FiFileText, FiClipboard, FiTrash2 } from 'react-icons/fi';
-import { Link, replace, useLocation, useNavigate, useNavigation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Toast from '../components/Toast';
 import UpdateQuestionModal from '../components/UpdateQuestionModal';
 
@@ -11,16 +11,17 @@ const TestDetail = () => {
     const location = useLocation();
     // const test = location.state?.test;
 
-    const [test,setTest] = useState(location.state?.test)
-    const [questionInfo,setQuestionInfo] = useState({})
-    const [selectedIndex,setSelectedIndex] = useState(null)
+    const [test, setTest] = useState(location.state?.test)
+    const [questionInfo, setQuestionInfo] = useState({})
+    const [selectedIndex, setSelectedIndex] = useState(null)
     const navigate = useNavigate()
 
-    useEffect(() => {
-        console.log("Received test:", test);  // check here
-    }, []);
+    // useEffect(() => {
+    //     console.log("Received test:", test);  // check here
+    // }, []);
 
     const result = {
+        testId: test._id,
         questionIds: test.questionIds,
         studentsAttempted: test.studentsAttempted,
         standard: test.standardId.standard,
@@ -54,35 +55,34 @@ const TestDetail = () => {
     });
 
     // Function to handle the update from the modal
-    const handleUpdateQuestion =async  (updatedData) => {
+    const handleUpdateQuestion = async (updatedData) => {
         // In a real app, you would make an API call here
-        console.log('Updated Data:', updatedData);
-      try{
+        // console.log('Updated Data:', updatedData);
+        try {
 
-      
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/updateQuestion/${test._id}/question/${updatedData._id}`, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body : JSON.stringify(updatedData)
-                });
-                 const data = await response.json()
-                if (!response.ok || data.success == false)
-                    throw new Error(data.message)               
-                console.log(data.question)
-                navigate('/test',{replace : true,state :{toast :{message : data.message,isSuccess : data.success}}})
-                // here update the state required index
-                // test.questionIds[index] = updatedData
 
-                // setTest(test)
-            }
-            catch(err)
-            {
-                console.log(err);
-            }
-       
+            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/updateQuestion/${test._id}/question/${updatedData._id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(updatedData)
+            });
+            const data = await response.json()
+            if (!response.ok || data.success == false)
+                throw new Error(data.message)
+            // console.log(data.question)
+            navigate('/test', { replace: true, state: { toast: { message: data.message, isSuccess: data.success } } })
+            // here update the state required index
+            // test.questionIds[index] = updatedData
+
+            // setTest(test)
+        }
+        catch (err) {
+            console.log(err);
+        }
+
     };
     return (
 
@@ -150,16 +150,17 @@ const TestDetail = () => {
                                 </div>
                             </div>
                             <div className="question-actions">
-                                <button className="btn btn-update-small" onClick={() => {setIsModalOpen(true)
+                                <button className="btn btn-update-small" onClick={() => {
+                                    setIsModalOpen(true)
                                     setQuestionInfo(question)
                                     setSelectedIndex(index)
-                                } }>
+                                }}>
                                     <FiEdit /> Update
                                 </button>
                             </div>
                             <UpdateQuestionModal
                                 show={isModalOpen}
-                                questionData= {questionInfo}
+                                questionData={questionInfo}
                                 onClose={() => setIsModalOpen(false)}
                                 onUpdate={handleUpdateQuestion}
                             // questionData={questionData}

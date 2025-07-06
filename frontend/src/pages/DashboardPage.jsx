@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import StatCard from '../components/StatCard';
 import AttendanceChart from '../components/AttendanceChart';
 import StudentChart from '../components/StudentChart';
+import Toast from '../components/Toast';
+import { useLocation } from 'react-router-dom';
 
 const DashboardPage = () => {
     const statCardData = [
@@ -10,8 +12,11 @@ const DashboardPage = () => {
         { title: "Staffs", value: "29,300", change: 3, changeType: "decrease", color: "#E0D9FF" },
         { title: "Awards", value: "95,800", change: 5, changeType: "increase", color: "#FEF5C3" },
     ];
+    const location = useLocation()
+    const [toast, setToast] = useState(location.state?.toast || null)
     return (
         <div className="dashboard-container">
+            {toast ? <Toast message={toast.message} isSuccess={toast.isSuccess} /> : null}
             <main className="dashboard-main">
                 <div className="stats-grid">
                     {statCardData.map(card => (
@@ -23,6 +28,7 @@ const DashboardPage = () => {
                     <AttendanceChart />
                 </div>
             </main>
+
         </div>
 
     )

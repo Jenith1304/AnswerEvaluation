@@ -267,7 +267,7 @@ const uploadAnswerSheet = async (req, res) => {
 
 
 const updateQuestionInTest = async (req, res) => {
-    try {        
+    try {
         const { testId, questionId } = req.params;
         const { questionText, referenceAnswer, marks } = req.body;
 
@@ -574,8 +574,65 @@ const evaluateResult = async (req, res) => {
         console.error('OCR Processing Failed:', err);
         res.status(500).json({ error: 'Internal server error.' });
     }
+}
+
+
+
+const updateMarks = async (req, res) => {
+    try {
+        const { testId, studentId } = req.params;
+        const result = req.body.result;
+
+        if (!testId || !studentId) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing testId, studentId "
+            });
+        }
+        if (!(Array.isArray(result))) {
+            return res.status(400).json({
+                success: false,
+                message: "Array"
+            });
+        }
+
+        // Ensure each result entry has required fields
+        const validatedResults = result
+            .filter(entry => entry.questionId && typeof entry.marks_obtained === "number")
+            .map(entry => ({
+                questionId: entry.questionId,
+                marks_obtained: entry.marks_obtained
+            }));
+
+        // Update result document by matching testId and studentId
+        const updated = await Result.findOneAndUpdate(
+            { testId, studentId },
+            { $set: { result: validatedResults } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updated) {
+            return res.status(404).json({
+                success: false,
+                message: "Result not found for provided testId and studentId"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Marks updated successfully",
+            updatedResult: updated
+        });
+
+    } catch (err) {
+        console.error("Error updating marks:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Server error while updating marks"
+        });
+    }
 };
 
 module.exports = {
-    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet
+    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet, updateMarks
 };

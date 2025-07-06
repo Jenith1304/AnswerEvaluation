@@ -10,6 +10,7 @@ const getStandardBasedTeacher = require("../services/getStandardBasedTeachers");
 const getStudentsBasedOnStandard = require("../services/getStandardBasedStudents");
 const getAllSubjects = require("../services/getAllSubjects");
 const resolveIdsByName = require('../services/resolveIdsByNames');
+const getAnswersheet = require("../services/getAnswersheetPDF");
 
 
 const createTeacher = async (req, res) => {
@@ -330,7 +331,7 @@ const getAllStudents = async (req, res) => {
         if (!response)
             return res.status(204).json({ message: 'No Student Found', success: false })
 
-         response = response.map(student => ({
+        response = response.map(student => ({
             dob: student.dob,
             gender: student.gender,
             rollNumber: student.rollNumber,
@@ -604,16 +605,16 @@ const deleteStudent = async (req, res) => {
         if (!response)
             throw new Error("Can not Delete an Student")
 
-        const userDeleteRes = await User.findOneAndDelete({_id: response.userId})
+        const userDeleteRes = await User.findOneAndDelete({ _id: response.userId })
 
         if (!userDeleteRes)
             throw new Error("Can not Delete an Student")
 
-        return res.status(200).json({ message: "Deleted Successfully" ,success : true})
+        return res.status(200).json({ message: "Deleted Successfully", success: true })
 
     } catch (error) {
         console.error("Error in DeleteStudent : ", error)
-        return res.status(500).json({ message: "Internal Server Error" ,success : false})
+        return res.status(500).json({ message: "Internal Server Error", success: false })
     }
 }
 
@@ -653,6 +654,22 @@ const updateStudent = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error", success: false });
     }
 };
+const getStudentAnswersheetController = async (req, res) => {
+    try {
+        const { studentId, testId } = req.params;
+        const response = await getAnswersheet(studentId, testId)
 
-module.exports = {updateStudent, deleteStudent, createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, getStudent,deleteTeacher};
+        if (!response)
+            return res.status(204).json({ message: "No Answersheet Found", success: false })
+
+        const fileUrl = response.fileUrl;
+        //const fileUrl = response.fileUrl.replace('/image/upload/', '/raw/upload/');
+        return res.status(200).json({ message: "Answersheet Found", fileUrl: fileUrl, success: true })
+
+    } catch (error) {
+        console.log("Error in getAnswresheet pdf controller : ", error)
+        return res.status(500).json({ message: 'Internal Server Error', success: false })
+    }
+}
+module.exports = { updateStudent, deleteStudent, createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, getStudent, deleteTeacher, getStudentAnswersheetController };
 
