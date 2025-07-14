@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { createTeacher, createStudent, createTest, deleteTest, addStandard, addSubjectToStandard, removeSubjectFromStandard, addSubject, deleteSubject, getStandardBasedTeachers, getStandardBasedStudent, assignSubjectToTeacher, removeAssignedSubject, getAllStudents, getAllTeacher, getAllSubjectController, getTeacher, deleteTeacher ,getStudent, deleteStudent, updateStudent} = require("../controllers/AdminController");
+const { createTeacher, createStudent, createTest, deleteTest, addStandard, addSubjectToStandard, removeSubjectFromStandard, addSubject, deleteSubject, getStandardBasedTeachers, getStandardBasedStudent, assignSubjectToTeacher, removeAssignedSubject, getAllStudents, getAllTeacher, getAllSubjectController, getTeacher, deleteTeacher ,getStudent, deleteStudent, updateStudent, adminDashboard, getAllStandard} = require("../controllers/AdminController");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const { getAllTests, updateQuestionInTest } = require("../controllers/TeacherController");
 const router = express.Router();
@@ -27,4 +27,7 @@ router.put("/updateQuestion/:testId/question/:questionId", adminMiddleware, upda
 router.get('/getAllTests', adminMiddleware, getAllTests)
 router.post('/deleteStudent',adminMiddleware,deleteStudent)
 router.post('/updateStudent',adminMiddleware, updateStudent)
+
+router.get('/dashboard', adminDashboard);
+
 module.exports = router;

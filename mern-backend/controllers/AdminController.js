@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const Student = require("../models/Student");
 const Standard = require("../models/Standard");
 const Teacher = require("../models/Teacher");
+const Test = require("../models/Test");
+const Result = require('../models/Result');
 const Subject = require("../models/Subject")
 const { isSubjectInStandard } = require('../services/subjectAndStandard.service');
 const getStudents = require("../services/getStudents");
@@ -10,6 +12,7 @@ const getStandardBasedTeacher = require("../services/getStandardBasedTeachers");
 const getStudentsBasedOnStandard = require("../services/getStandardBasedStudents");
 const getAllSubjects = require("../services/getAllSubjects");
 const resolveIdsByName = require('../services/resolveIdsByNames');
+
 
 
 const createTeacher = async (req, res) => {
@@ -330,7 +333,7 @@ const getAllStudents = async (req, res) => {
         if (!response)
             return res.status(204).json({ message: 'No Student Found', success: false })
 
-         response = response.map(student => ({
+        response = response.map(student => ({
             dob: student.dob,
             gender: student.gender,
             rollNumber: student.rollNumber,
@@ -604,16 +607,16 @@ const deleteStudent = async (req, res) => {
         if (!response)
             throw new Error("Can not Delete an Student")
 
-        const userDeleteRes = await User.findOneAndDelete({_id: response.userId})
+        const userDeleteRes = await User.findOneAndDelete({ _id: response.userId })
 
         if (!userDeleteRes)
             throw new Error("Can not Delete an Student")
 
-        return res.status(200).json({ message: "Deleted Successfully" ,success : true})
+        return res.status(200).json({ message: "Deleted Successfully", success: true })
 
     } catch (error) {
         console.error("Error in DeleteStudent : ", error)
-        return res.status(500).json({ message: "Internal Server Error" ,success : false})
+        return res.status(500).json({ message: "Internal Server Error", success: false })
     }
 }
 
@@ -654,5 +657,73 @@ const updateStudent = async (req, res) => {
     }
 };
 
-module.exports = {updateStudent, deleteStudent, createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, getStudent,deleteTeacher};
+const adminDashboard = async (req, res) => {
+    try {
+        const [totalStudents, totalTeachers, totalTests, genderStats, studentsPerStandard] = await Promise.all([
+            Student.countDocuments(),
+            Teacher.countDocuments(),
+            Test.countDocuments(),
+            Student.aggregate([
+                {
+                    $group: {
+                        _id: "$gender",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]),
+            Student.aggregate([
+                {
+                    $lookup: {
+                        from: "standards",
+                        localField: "standardId",
+                        foreignField: "_id",
+                        as: "standard"
+                    }
+                },
+                { $unwind: "$standard" },
+                {
+                    $group: {
+                        _id: "$standard.standard",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        standard: "$_id",
+                        studentCount: "$count",
+                        _id: 0
+                    }
+                }
+            ])
+        ]);
+
+        const genderBreakdown = {
+            male: 0,
+            female: 0
+        };
+
+        genderStats.forEach(g => {
+            if (g._id?.toLowerCase() === "male") genderBreakdown.male = g.count;
+            else if (g._id?.toLowerCase() === "female") genderBreakdown.female = g.count;
+        });
+
+        return res.status(200).json({
+            message: "Dashboard data fetched",
+            success: true,
+            data: {
+                students: totalStudents,
+                teachers: totalTeachers,
+                test: totalTests,
+                gender: genderBreakdown,
+                studentsPerStandard
+            }
+        });
+
+    } catch (error) {
+        console.error("Error in adminDashboard controller:", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+
+module.exports = { updateStudent, deleteStudent, createStudent, createTeacher, addStandard, addSubjectToStandard, removeSubjectFromStandard, deleteSubject, addSubject, getAllTeacher, getAllStudents, removeAssignedSubject, assignSubjectToTeacher, getStandardBasedStudent, getStandardBasedTeachers, getAllSubjectController, getTeacher, getStudent, deleteTeacher, adminDashboard };
 

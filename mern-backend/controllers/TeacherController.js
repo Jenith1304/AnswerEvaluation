@@ -6,12 +6,15 @@ const getPdfPageCount = require("../services/getPdfPageCount");
 const generateImageUrlsFromCloudinaryPDF = require("../services/pdfToImageUrls");
 const vision = require('@google-cloud/vision');
 const Result = require("../models/Result");
+const Standard = require("../models/Standard");
 // Init Google Vision client (make sure GOOGLE_APPLICATION_CREDENTIALS is set)
 const client = new vision.ImageAnnotatorClient();
 
 
 const createTest = async (req, res) => {
     try {
+
+        
         const teacherId = await Teacher.findOne({ userId: req.user.id });
         const {
             // Provided directly
@@ -576,6 +579,69 @@ const evaluateResult = async (req, res) => {
     }
 };
 
+const getAllStandard = async(req,res)=>{
+    try {
+        let response = await Standard.find().select('standard subjects').populate('subjects.subjectId','subject_name').lean()
+
+
+        if(!response)
+            throw new Error("Did not get any standards")
+
+
+        
+
+        response = response.map((obj)=>{
+            return {
+                ...obj,
+                subjects : obj.subjects.map((subject)=>{
+                    return{
+                        subjectId : subject.subjectId._id,
+                        subject_name : subject.subjectId.subject_name
+                    }
+                })
+
+            }
+        })
+
+        return res.status(200).json({message : "Standard Got",data : response,success : true})
+
+    } catch (error) {
+        console.log('Error in getAll Standard',error)
+        return res.status(500).json({message : "Intenal Server Error",success : false})
+    }
+}
+
+const teacherBasedStandard = async (req, res) => {
+    try {
+
+        let response = await Teacher.findOne({ userId: req.user.id }).populate('subjects.standardId', 'standard').populate('subjects.subjectId', 'subject_name').lean()
+
+        if (!response)
+            throw new Error("Did not get teacher")
+
+        response = {
+            ...response,
+            subjects: response.subjects.map((subject) => {
+                return {
+                    subject_name: subject.subjectId.subject_name,
+                    standard: subject.standardId.standard,
+                    subjectId : subject.subjectId._id,
+                    standardId: subject.standardId._id,
+                }
+            }
+            )
+        }
+
+        return res.status(200).json({ message: "Data got", data: response, success: true })
+
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Insternal Server Error', success: false })
+    }
+}
+
+
 module.exports = {
-    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet
+    getAllStandard,
+    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet, teacherBasedStandard
 };

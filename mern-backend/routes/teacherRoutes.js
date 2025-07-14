@@ -1,6 +1,6 @@
 const express = require('express')
 const teacherMiddleware = require('../middlewares/teacherMiddleware')
-const { createTest, deleteTest, getAllTests, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF, processImagesWithOCR, uploadAnswerSheet, evaluateResult } = require('../controllers/TeacherController')
+const { createTest, deleteTest, getAllTests, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, extractImagesFromPDF, processImagesWithOCR, uploadAnswerSheet, evaluateResult, getAllStandard, teacherBasedStandard } = require('../controllers/TeacherController')
 
 const teacherRouter = express.Router()
 
@@ -17,5 +17,9 @@ teacherRouter.put("/updateQuestion/:testId/question/:questionId", teacherMiddlew
 teacherRouter.post("/addQuestion/:testId/", teacherMiddleware, addQuestionToTest);
 teacherRouter.post("/removeQuestion/:testId/question/:questionId", teacherMiddleware, removeQuestionFromTest);
 teacherRouter.get("/evaulateResult", teacherMiddleware, evaluateResult);
+
+teacherRouter.get('/getAllStandard',teacherMiddleware,getAllStandard)
+
+teacherRouter.get('/getTeacherBasedStandard',teacherMiddleware,teacherBasedStandard)
 
 module.exports = teacherRouter  
