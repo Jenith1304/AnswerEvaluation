@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <SidebarLink to="/teachers" icon={<FiUsers />} label="Teachers" />
                     <SidebarLink to="/students" icon={<FiUserCheck />} label="Students" />
                     <SidebarLink to="/test" icon={<MdOutlineAssignment />} label="Test" />
-                    <SidebarLink to="/finance" icon={<FiDollarSign />} label="Finance" />
+                    <SidebarLink to="/CreateNewTest" icon={<FiDollarSign />} label="Create New Test" />
                     <SidebarLink to="/notice" icon={<FiBell />} label="Notice" />
                     <SidebarLink to="/library" icon={<FiBookOpen />} label="Library" />
                     <SidebarLink to="/message" icon={<FiMessageSquare />} label="Message" />

@@ -11,7 +11,7 @@ import './App.css'
 import "./styles/Sidebar.css"
 import { FiMenu } from 'react-icons/fi';
 import TeacherDetail from './pages/TeacherDetail';
-import TestPage from './pages/TestDetail';
+import TestPage from '../src/pages/TestPage';
 import TestListPage from './pages/TestListPage';
 import TestDetail from './pages/TestDetail';
 import ResultPage from './pages/ResultPage';
@@ -36,6 +36,7 @@ function App() {
               <Route path="/teachers/:teacherId" element={<TeacherDetail />} />
               <Route path="/students" element={<StudentPage />} />
               <Route path="/test" element={<TestListPage />} />
+              <Route path="/createnewtest" element={<TestPage></TestPage>} />
               <Route path="/test-details/:testId" element={<TestDetail />} />
               <Route path="/result/:testId" element={<ResultPage />} />
               <Route path="/students/:studentId" element={<StudentDetail/>} />

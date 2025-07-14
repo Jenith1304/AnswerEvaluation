@@ -1,0 +1,136 @@
+/* ... (previous styles for body, pageContainer, mainCard, etc. remain the same) ... */
+
+body {
+    background-color: #f0f2f5;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #343a40;
+}
+
+.pageContainer {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.mainCard {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    max-width: 900px;
+    border: 1px solid #e9ecef;
+}
+
+.teacherInfo {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-bottom: 24px;
+}
+
+.teacherInfo p { margin: 0; font-size: 1rem; color: #495057; }
+.teacherInfo strong { color: #212529; }
+
+.testHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.controlsContainer { display: flex; gap: 16px; flex-wrap: wrap; }
+.iconWrapper { position: relative; }
+.iconWrapper::after { content: ''; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #6c757d; pointer-events: none; }
+
+.dropdown { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: #fff; border: 1px solid #ced4da; border-radius: 8px; padding: 10px 15px; font-size: 1rem; font-family: inherit; color: #495057; cursor: pointer; min-width: 160px; transition: border-color 0.2s, box-shadow 0.2s; }
+select.dropdown { padding-right: 35px; }
+.dropdown:focus { border-color: #86b7fe; outline: 0; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
+
+.addButton { display: flex; align-items: center; gap: 8px; background-color: #1993A8; color: white; border: none; border-radius: 8px; padding: 10px 18px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s ease-in-out; }
+.addButton:hover { background-color: #137a8c; }
+.addButton svg { stroke: white; }
+
+.questionsList { display: flex; flex-direction: column; gap: 20px; max-height: 65vh; overflow-y: auto; padding-right: 10px;}
+
+.questionCard { background-color: #fdfdff; border: 1px solid #e9ecef; border-radius: 10px; padding: 20px; }
+.questionHeader { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: nowrap; gap: 16px; }
+
+/* === NEW AND MODIFIED STYLES FOR INPUTS === */
+
+.questionInputContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.questionNumber {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.questionInput {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 40px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.questionInput:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.marksInputContainer { display: flex; align-items: center; padding-top: 30px; /* Aligns with textarea */}
+.marksInput { border: 1px solid #ced4da; border-radius: 6px; padding: 8px 12px; font-size: 1rem; width: 80px; text-align: center; transition: border-color 0.2s, box-shadow 0.2s; }
+.marksInput:focus { border-color: #86b7fe; outline: 0; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
+
+.answerSection {
+    border-left: 4px solid #4D9DE0;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.answerLabel {
+    font-weight: 600;
+    color: #343a40;
+    font-size: 1rem;
+}
+
+.answerInput {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #495057;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.answerInput:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Custom scrollbar for question list */
+.questionsList::-webkit-scrollbar { width: 8px; }
+.questionsList::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.questionsList::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.questionsList::-webkit-scrollbar-thumb:hover { background: #aaa; }
