@@ -624,6 +624,9 @@ const updateStudent = async (req, res) => {
     try {
         const { _id, name, email, rollNumber, gender, dob, standard } = req.body;
 
+        const standardId = await Standard.findOne({standard : standard}).select('_id')
+
+
         if (!_id || !rollNumber || !gender || !dob || !standard) {
             return res.status(400).json({ message: "Please provide all required fields", success: false });
         }
@@ -635,7 +638,7 @@ const updateStudent = async (req, res) => {
                     rollNumber,
                     gender,
                     dob: dob, // convert to Date object if needed
-                    standard
+                    standardId
                 }
             },
             {
