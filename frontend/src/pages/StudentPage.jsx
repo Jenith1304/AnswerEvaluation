@@ -91,6 +91,9 @@ const StudentPage = () => {
             } catch (error) {
                 console.error(error)
             }
+            finally{
+                setLoading(false);
+            }
 
         }
         fetchAllStudent();
