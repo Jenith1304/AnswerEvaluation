@@ -1,0 +1,237 @@
+/* Using a modern, clean font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* --- CSS Variables for Theming --- */
+:root {
+  --primary-bg-color: #f8f9fa; /* Light grey page background */
+  --card-bg-color: #ffffff;
+  --primary-text-color: #343a40; /* Dark grey for text */
+  --secondary-text-color: #6c757d; /* Lighter grey for subtitles */
+  --border-color: #e9ecef;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  
+  /* Button and Tag colors inspired by the provided image */
+  --upload-btn-bg: #17a2b8; /* Info Blue/Teal */
+  --upload-btn-hover-bg: #138496;
+  --evaluate-btn-bg-start: #3498db; /* Gradient Blue */
+  --evaluate-btn-bg-end: #2980b9;
+  --evaluate-btn-hover-bg: #217dbb;
+  --evaluated-btn-bg: #28a745; /* Success Green */
+  --error-btn-bg: #dc3545; /* Error Red */
+  --disabled-btn-bg: #ced4da;
+  --disabled-btn-color: #6c757d;
+  --standard-tag-bg: #20c997; /* Teal from image */
+  --standard-tag-color: #ffffff;
+}
+
+/* body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--primary-bg-color);
+  color: var(--primary-text-color);
+} */
+
+.evaluation-page-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.evaluation-card {
+  width: 100%;
+  max-width: 900px;
+  height: fit-content;
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 25px var(--shadow-color);
+  overflow: hidden;
+}
+
+/* --- Card Header --- */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+    background-color: var(--card-bg-color);
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.card-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.standard-tag {
+  background-color: var(--standard-tag-bg);
+  color: var(--standard-tag-color);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* --- Student List --- */
+.student-list-container {
+  padding: 0 2rem 1.5rem;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  /* gap:5rem; */
+  padding: 1rem 0.5rem;
+  font-weight: 600;
+  color: var(--secondary-text-color);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-actions {
+  text-align: right;
+  flex-basis: 320px;
+}
+
+.student-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: 1rem;
+}
+
+.student-row:last-child {
+  border-bottom: none;
+}
+
+.student-info {
+  font-weight: 500;
+  flex: 1;
+}
+
+.student-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-basis: 320px;
+  justify-content: flex-end;
+}
+
+/* --- Buttons and Statuses --- */
+.action-btn {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  display: inline-block;
+  text-align: center;
+  min-width: 120px;
+}
+
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Hidden file input */
+.action-btn input[type="file"] {
+  display: none;
+}
+
+.upload-btn {
+  background-color: var(--upload-btn-bg);
+}
+.upload-btn:hover {
+  background-color: var(--upload-btn-hover-bg);
+}
+.upload-btn.error {
+    background-color: var(--error-btn-bg);
+}
+
+.evaluate-btn {
+  background-image: linear-gradient(to right, var(--evaluate-btn-bg-start), var(--evaluate-btn-bg-end));
+}
+.evaluate-btn:hover:not(:disabled) {
+  background-image: none;
+  background-color: var(--evaluate-btn-hover-bg);
+}
+.evaluate-btn.evaluated {
+  background-image: none;
+  background-color: var(--evaluated-btn-bg);
+}
+
+/* Disabled State */
+.action-btn:disabled {
+  background-image: none;
+  background-color: var(--disabled-btn-bg);
+  color: var(--disabled-btn-color);
+  cursor: not-allowed;
+}
+
+/* Status Text */
+.status-text {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+  min-width: 120px;
+  text-align: center;
+}
+
+.status-text.success {
+  color: var(--evaluated-btn-bg);
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+  .evaluation-card {
+    border-radius: 0;
+  }
+  .card-header, .student-list-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .list-header {
+    display: none; /* Hide header on mobile, context is clear from the rows */
+  }
+  .student-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .student-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-basis: auto; /* Reset basis */
+  }
+}
+
+@media (max-width: 480px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .student-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .action-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

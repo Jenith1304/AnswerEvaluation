@@ -166,7 +166,7 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials", success: false });
         }
 
-        const payload = { user: { id: user._id, role: user.role } };
+        const payload = { user: { id: user._id, role: user.role, name: user.name, email: user.email } };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         res.cookie("token", token, {
@@ -191,8 +191,8 @@ const login = async (req, res) => {
 const logout = (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development",
-        sameSite: "strict",
+        secure: false,
+        sameSite: "lax",
     });
 
     return res.status(200).json({ message: "Logout successful", success: true });

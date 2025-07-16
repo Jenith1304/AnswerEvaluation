@@ -64,7 +64,7 @@
 // export default App;
 
 
-import React, { useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import DashboardPage from './pages/DashboardPage';
@@ -84,93 +84,124 @@ import Layout from './components/Layout';
 import './App.css';
 import './styles/Sidebar.css';
 import PrivateRoute from './components/PrivateRoute';
+import LogoutPage from './pages/LogoutPage';
+import EvaluatePage from './pages/EvaluatePage';
+
+const authContext = createContext()
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [authInfo, setAuthInfo] = useState({
+    id: 'UserId',
+    name: "userName",
+    email: "email",
+    role: "role",
+    isAuthenticated: false
+  })
   return (
     <Router>
-      <Routes>
-        {/* Public route - Login */}
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
+      <authContext.Provider value={{ authInfo, setAuthInfo }}>
+        <Routes>
 
-        {/* Protected routes */}
-        <Route path="/dashboard" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <DashboardPage />
-            </Layout>
-          </PrivateRoute>
-        } />
+          {/* Public route - Login */}
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/teachers" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <TeacherPage />
-            </Layout>
-          </PrivateRoute>
-        } />
+          {/* Protected routes */}
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <DashboardPage />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/teachers/:teacherId" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <TeacherDetail />
-            </Layout>
-          </PrivateRoute>
-        } />
+          <Route path="/teachers" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <TeacherPage />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/students" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <StudentPage />
-            </Layout>
-          </PrivateRoute>
-        } />
+          <Route path="/teachers/:teacherId" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <TeacherDetail />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/students/:studentId" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <StudentDetail />
-            </Layout>
-          </PrivateRoute>
-        } />
+          <Route path="/students" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <StudentPage />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/test" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <TestListPage />
-            </Layout>
-          </PrivateRoute>
-        } />
+          <Route path="/students/:studentId" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <StudentDetail />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/test-details/:testId" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <TestDetail />
-            </Layout>
-          </PrivateRoute>
-        } />
+          <Route path="/test" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <TestListPage />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/result/:testId" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <ResultPage />
-            </Layout>
-          </PrivateRoute>
-        } />
+          <Route path="/test-details/:testId" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <TestDetail />
+              </Layout>
+            </PrivateRoute>
+          } />
 
-        <Route path="/marksheet" element={
-          <PrivateRoute>
-            <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-              <MarkSheet />
-            </Layout>
-          </PrivateRoute>
-        } />
-      </Routes>
+          <Route path="/result/:testId" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <ResultPage />
+              </Layout>
+            </PrivateRoute>
+          } />
+
+          <Route path="/marksheet" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <MarkSheet />
+              </Layout>
+            </PrivateRoute>
+          } />
+
+          <Route path="/logout" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <LogoutPage />
+              </Layout>
+            </PrivateRoute>
+          } />
+
+          <Route path="/evaluate/:testId" element={
+            <PrivateRoute>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <EvaluatePage />
+              </Layout>
+            </PrivateRoute>
+          } />
+
+        </Routes>
+      </authContext.Provider>
     </Router>
   );
 }
 
 export default App;
+export { authContext };
 

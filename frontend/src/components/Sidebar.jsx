@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
     FiBell, FiBookOpen, FiCalendar, FiDollarSign, FiHome,
     FiMessageSquare, FiUser, FiUserCheck, FiUsers, FiX
 } from 'react-icons/fi';
+import { HiOutlineBadgeCheck } from "react-icons/hi";
+import { CiLogout } from "react-icons/ci";
 import { MdOutlineAssignment } from "react-icons/md";
 import { NavLink } from 'react-router-dom';
 import '../styles/Sidebar.css';
-
+import { authContext } from '../App';
+import { Navigate } from 'react-router-dom';
 const Sidebar = ({ isOpen, onClose }) => {
+    const { setAuthInfo } = useContext(authContext)
     // Close on Escape key
     useEffect(() => {
         const handleKey = (e) => {
@@ -33,17 +37,19 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                 <nav>
                     <p className="sidebar-section">Menu</p>
-                    <SidebarLink to="/" icon={<FiHome />} label="Dashboard" />
+                    <SidebarLink to="/dashboard" icon={<FiHome />} label="Dashboard" />
                     <SidebarLink to="/teachers" icon={<FiUsers />} label="Teachers" />
                     <SidebarLink to="/students" icon={<FiUserCheck />} label="Students" />
                     <SidebarLink to="/test" icon={<MdOutlineAssignment />} label="Test" />
-                    <SidebarLink to="/finance" icon={<FiDollarSign />} label="Finance" />
+
+
+                    {/* <SidebarLink to="/finance" icon={<FiDollarSign />} label="Finance" />
                     <SidebarLink to="/notice" icon={<FiBell />} label="Notice" />
                     <SidebarLink to="/library" icon={<FiBookOpen />} label="Library" />
-                    <SidebarLink to="/message" icon={<FiMessageSquare />} label="Message" />
+                    <SidebarLink to="/message" icon={<FiMessageSquare />} label="Message" /> */}
 
                     <p className="sidebar-section">Other</p>
-                    <SidebarLink to="/login" icon={<FiUser />} label="Profile" />
+                    <SidebarLink to="/logout" icon={<CiLogout />} setAuthInfo={setAuthInfo} label="Logout" />
                 </nav>
             </aside>
         </>

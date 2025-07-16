@@ -6,6 +6,8 @@ const getPdfPageCount = require("../services/getPdfPageCount");
 const generateImageUrlsFromCloudinaryPDF = require("../services/pdfToImageUrls");
 const vision = require('@google-cloud/vision');
 const Result = require("../models/Result");
+const Student = require("../models/Student");
+const { response } = require("express");
 // Init Google Vision client (make sure GOOGLE_APPLICATION_CREDENTIALS is set)
 const client = new vision.ImageAnnotatorClient();
 
@@ -110,6 +112,7 @@ const createTest = async (req, res) => {
 };
 const getAllTests = async (req, res) => {
     try {
+
         const tests = await Test.find()
             .populate({
                 path: "teacherId",
@@ -143,6 +146,51 @@ const getAllTests = async (req, res) => {
 
         return res.status(200).json({
             message: "All tests fetched",
+            tests: formattedTests,
+            success: true
+        });
+    } catch (err) {
+        console.error("Error fetching tests:", err);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+const getAllTestsTeacher = async (req, res) => {
+    try {
+        const teacherId = await Teacher.findOne({ userId: req.user.id });
+        // console.log(teacherId)
+        const tests = await Test.find({ teacherId })
+            .populate({
+                path: "teacherId",
+                select: "userId",
+                populate: { path: "userId", select: "name email" }
+            })
+            // .populate("studentsAttempted.studentId.userId", "name")
+            .populate({
+                path: "studentsAttempted.studentId",
+                select: "userId",
+                populate: { path: "userId", select: "name" }
+            })
+            // .populate("studentsAttempted.resultId", "result")
+            .populate({
+                path: "studentsAttempted.resultId",
+                select: "result",
+                populate: { path: "result.questionId", select: "questionText" }
+            })
+            .populate("subjectId", "subject_name")
+            .populate("standardId", "standard")
+            .populate("questionIds", "questionText referenceAnswer marks").select(
+                "-createdAt -updatedAt -__v"
+            );
+
+        // 🔁 Format if you want flat teacherId and name
+        const formattedTests = tests.map(test => ({
+            ...test.toObject(),
+            teacherId: test.teacherId,
+            teacherName: test.teacherId?.userId?.name
+        }));
+
+        return res.status(200).json({
+            message: "All tests fetched of a teacher",
             tests: formattedTests,
             success: true
         });
@@ -246,9 +294,15 @@ const uploadAnswerSheet = async (req, res) => {
 
             if (!resultId) {
                 resultId = await Result.create({ testId, studentId })
-                test.studentsAttempted.push({ studentId, resultId })
-                await test.save()
-
+                const alreadyAttempted = test.studentsAttempted.some(
+                    attempt => attempt.studentId.toString() === studentId.toString()
+                );
+                if (!alreadyAttempted) {
+                    test.studentsAttempted.push({ studentId, resultId });
+                    await test.save();
+                }
+                // test.studentsAttempted.push({ studentId, resultId })
+                // await test.save()
             }
 
 
@@ -632,7 +686,65 @@ const updateMarks = async (req, res) => {
         });
     }
 };
+const getAllStudentsofStd = async (req, res) => {
+    try {
+        const { standardId } = req.params;
+
+        if (!standardId) {
+            return res.status(400).json({
+                success: false,
+                message: "Standard ID is required"
+            });
+        }
+
+        const students = await Student.find({ standardId })
+            .populate({
+                path: 'userId',
+                select: 'name email'
+            });
+
+        if (students.length < 1) {
+            return res.status(404).json({
+                success: false,
+                message: "No Students Found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Students Found successfully",
+            students
+        });
+    } catch (err) {
+        console.error("Unable to fetch Students:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Server error while fetching students"
+        });
+    }
+};
+
+const getAnswerSheet = async (req, res) => {
+
+    try {
+        const { studentId, testId } = req.body;
+        if (!studentId || !testId) {
+            return res.status(400).json({ message: "StudentId and TestId required" })
+        }
+        const response = await AnswerSheetPDF.findOne({ studentId, testId })
+
+        if (!response) {
+            return res.status(400).json({ message: "AnswerSheet Not found" })
+        }
+        return res.status(200).json({ message: "Found Succesfully", success: true, response })
+    }
+    catch (err) {
+        console.error("Failed to extract Evaluate", err);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+
+}
 
 module.exports = {
-    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet, updateMarks
+    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet, updateMarks, getAllTestsTeacher, getAllStudentsofStd, getAnswerSheet
 };

@@ -18,9 +18,7 @@ const LoginPage = () => {
     const [toast, setToast] = useState(null)
     const navigate = useNavigate();
     // Form submission handler
-    useEffect(() => {
-        console.log("Cookies:", document.cookie); // Should show token
-    }, []);
+
     const handleLogin = async (event) => {
         event.preventDefault();
 
@@ -30,11 +28,6 @@ const LoginPage = () => {
         }
 
         // In a real app, you would send these details to your backend for verification
-        console.log('Logging in...', {
-            role: selectedRole,
-            email: email,
-            password: password, // In a real app, NEVER log passwords
-        });
         try {
             const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
                 method: "POST",
@@ -52,7 +45,7 @@ const LoginPage = () => {
             navigate('/dashboard', { replace: true, state: { toast: { message: data.message, isSuccess: data.success } } })
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             setToast({ message: err.message, isSuccess: false })
         }
         setEmail("");

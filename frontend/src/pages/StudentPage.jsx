@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import { useMemo } from 'react';
 import CreateStudentModal from '../components/CreateStudentModal';
 import Toast from '../components/Toast';
+import { useContext } from 'react';
+import { authContext } from '../App';
 
 const StudentPage = () => {
 
@@ -16,6 +18,8 @@ const StudentPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [resMessage, setResMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false)
+
+    const { authInfo } = useContext(authContext)
 
 
     // The list to be rendered is simply our mock data.
@@ -74,7 +78,7 @@ const StudentPage = () => {
 
             try {
                 setLoading(true);
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/getAllStudents`, {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/${authInfo.role}/getAllStudents`, {
                     method: "GET",
                     credentials: 'include'
                 })

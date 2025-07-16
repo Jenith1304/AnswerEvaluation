@@ -166,15 +166,33 @@ const TeacherPage = () => {
                             filteredTeachers.map(teacher => {
                                 return teacher.subjects.length > 0 ? (<tr key={teacher._id} className="clickable-row" onClick={() => handleViewDetails(teacher._id)}>
                                     <td>{teacher.name}</td>
-                                    <td>
+                                    {/* <td>
                                         {teacher.subjects.map((obj, index) => (
                                             <span key={index} style={{backgroundColor:'#A0D7E7'}} className="subject-badge">{obj.subjectName}</span>
                                         ))}
-                                    </td>
+                                    </td> */}
                                     {/* <td>{teacher.standard}</td> */}
-                                    <td>
+                                    {/* <td>
                                         {teacher.subjects.map((obj, index) => (
                                             <span key={index} style={{backgroundColor:'#FDD874'}} className="subject-badge">{obj.standard}</span>
+                                        ))}
+                                    </td> */}
+                                    <td>
+                                        {[...new Set(
+                                            teacher.subjects.map(obj => obj.subjectName.trim().toLowerCase())
+                                        )].map((subject, index) => (
+                                            <span key={index} style={{ backgroundColor: '#A0D7E7', textTransform: 'capitalize' }} className="subject-badge">
+                                                {subject}
+                                            </span>
+                                        ))}
+                                    </td>
+                                    <td>
+                                        {[...new Set(
+                                            teacher.subjects.map(obj => obj.standard.trim().toLowerCase())
+                                        )].map((standard, index) => (
+                                            <span key={index} style={{ backgroundColor: '#FDD874', textTransform: 'capitalize' }} className="subject-badge">
+                                                {standard}
+                                            </span>
                                         ))}
                                     </td>
                                     <td className="arrow-cell">{'>'}</td>

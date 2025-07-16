@@ -70,7 +70,7 @@ const MarkSheet = () => {
             return;
         }
         const mark = parseInt(value);
-        const maxMarks = questions[index].marks;
+        const maxMarks = parseInt(questions[index].marks);
 
 
         if (isNaN(mark) || mark < 0 || mark > maxMarks) {
@@ -78,6 +78,7 @@ const MarkSheet = () => {
                 ...prev,
                 [index]: `Marks must be between 0 and ${maxMarks}`,
             }));
+            return;
         }
 
 
@@ -92,12 +93,12 @@ const MarkSheet = () => {
 
     }
     const handleUpdate = async (testId, studentId) => {
-  
+
         if (Object.keys(errors).length > 0) {
             alert("Fix the errors before submitting.");
             return;
         }
-    
+
 
         const hasChanged = editedResults.some((entry, index) => {
             const newMark = Number(entry.marks_obtained);

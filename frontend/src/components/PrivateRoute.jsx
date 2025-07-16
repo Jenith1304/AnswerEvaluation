@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { authContext } from '../App';
 
 // Utility: Optional loading spinner while checking auth
 const Loading = () => <div>Loading...</div>;
 
 const PrivateRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading, true/false = result
-
+  // const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading, true/false = result
+  const { authInfo, setAuthInfo } = useContext(authContext)
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     // Hit backend to check if token is valid (you can cache this later if needed)
     const checkAuth = async () => {
@@ -18,26 +20,41 @@ const PrivateRoute = ({ children }) => {
 
         const data = await response.json();
         if (response.ok && data.success) {
-          setIsAuthenticated(true);
+          // console.log(data.user)
+          setAuthInfo(() => ({
+            // keep previous state if needed
+            ...data.user,         // update with user from API
+            isAuthenticated: true
+          }));
+
+          // console.log(authInfo);
+          // return children
+          // setIsAuthenticated(true);
         } else {
-          setIsAuthenticated(false);
+          setAuthInfo({
+            ...authInfo, isAuthenticated: false
+          })
+          return <Navigate to="/login" replace />
+          // setIsAuthenticated(false);
         }
       } catch (error) {
         console.error("Auth check failed", error);
-        setIsAuthenticated(false);
+        // setIsAuthenticated(false);
+      }
+      finally {
+        setLoading(false);
       }
     };
 
     checkAuth();
   }, []);
 
-  // Still loading
-  if (isAuthenticated === null) return <Loading />;
+  if (loading) return <Loading />;
 
-  // Not logged in
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!authInfo.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-  //  Logged in
   return children;
 };
 

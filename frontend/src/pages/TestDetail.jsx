@@ -4,21 +4,23 @@ import { FiEdit, FiFileText, FiClipboard, FiTrash2 } from 'react-icons/fi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Toast from '../components/Toast';
 import UpdateQuestionModal from '../components/UpdateQuestionModal';
-
+import { useContext } from 'react';
+import { authContext } from '../App';
+import { HiOutlineBadgeCheck } from "react-icons/hi";
 
 const TestDetail = () => {
 
     const location = useLocation();
     // const test = location.state?.test;
-
+    const { authInfo } = useContext(authContext);
     const [test, setTest] = useState(location.state?.test)
     const [questionInfo, setQuestionInfo] = useState({})
     const [selectedIndex, setSelectedIndex] = useState(null)
     const navigate = useNavigate()
-
-    // useEffect(() => {
-    //     console.log("Received test:", test);  // check here
-    // }, []);
+    useEffect(() => {
+        console.log("Received test:", test);  // check here
+        console.log(authInfo.role)
+    }, []);
 
     const result = {
         testId: test._id,
@@ -114,6 +116,7 @@ const TestDetail = () => {
                         <FiClipboard className="title-icon" />
                         <h3>{test.subjectId.subject_name} Test</h3>
                     </div>
+
                     <div className="assigned-meta">
                         <span className="standard-pill">Standard {test.standardId.standard.split(' ')[1]}</span>
                         {/* {testData.resultGenerated && ( */}
@@ -121,6 +124,20 @@ const TestDetail = () => {
                                 <FiFileText />
                                 <span>Result</span>
                             </a> */}
+                        {authInfo.role === "teacher" ? (<Link
+                            key={test._id}
+                            to={`/evaluate/${test._id}`}
+                            state={{ test }} // ✅ pass state here
+                            className="result-link"
+                        ><HiOutlineBadgeCheck />
+                            <span>Evaluate</span></Link>) : null}
+                        {/* <Link
+                            key={test._id}
+                            to={`/evaluate/${test._id}`}
+                            state={{ test }} // ✅ pass state here
+                            className="result-link"
+                        ><HiOutlineBadgeCheck />
+                            <span>Evaluate</span></Link> */}
                         <Link
                             key={test._id}
                             to={`/result/${test._id}`}

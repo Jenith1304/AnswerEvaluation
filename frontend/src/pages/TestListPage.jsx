@@ -1,46 +1,58 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import '../styles/Test.css';
 import { FiBookOpen, FiUser, FiAward, FiChevronRight } from 'react-icons/fi';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Toast from '../components/Toast';
+import { authContext } from '../App';
 
 
 
 const TestListPage = () => {
+    const { authInfo } = useContext(authContext);
     const [testListData, setTestListData] = useState([]);
     const [loading, setLoading] = useState(true);
     const location = useLocation()
 
     const [toast, setToast] = useState(location.state?.toast || null)
 
-
+   
 
     useEffect(() => {
-
-        const fetchTests = async () => {
+        (async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/getAllTests`, {
-                    method: "GET",
-                    credentials: 'include'
-                })
-                const data = await response.json()
-                if (!response.ok || data.success == false)
-                    throw new Error(data.message)
-                setTestListData(data.tests)
-                // console.log(data.tests)
-                setLoading(false);
+                let response;
 
+                if (authInfo.role === "teacher") {
+                    response = await fetch(`${import.meta.env.VITE_BASE_URL}/teacher/getAllTestsTeacher`, {
+                        method: "GET",
+                        credentials: 'include'
+                    });
+                } else if (authInfo.role === "admin") {
+                    response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/getAllTests`, {
+                        method: "GET",
+                        credentials: 'include'
+                    });
+                } else {
+                    console.warn("Unsupported role:", authInfo.role);
+                    setLoading(false); // stop loading if no valid role
+                    return;
+                }
+
+                const data = await response.json();
+                if (!response.ok || data.success === false) throw new Error(data.message);
+
+                setTestListData(data.tests);
             } catch (error) {
-                console.error(error)
+                console.error("Failed to fetch tests:", error);
+            } finally {
+                setLoading(false);
             }
-        }
+        })();
+    }, [authInfo.role]);
 
-
-        fetchTests()
-    }, []);
 
     if (loading) {
         return <div className="detail-container"><h2>Loading Details...</h2></div>;
@@ -98,7 +110,7 @@ const TestListPage = () => {
                 </div>
                 {toast ? <Toast message={toast.message} isSuccess={toast.isSuccess} /> : null}
             </div>
-        </div>
+        </div >
     );
 };
 
