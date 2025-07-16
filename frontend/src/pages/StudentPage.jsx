@@ -57,6 +57,10 @@ const StudentPage = () => {
 
             setLoading(false)
 
+            setStudent((prev)=>[
+                ...prev,
+                {name,gender,dob,rollNumber,standard,_id}
+            ])
         } catch (error) {
             console.log(error);
             setResMessage(error.message);
@@ -180,7 +184,7 @@ const StudentPage = () => {
                 onSave={handleSaveStudent} />
 
             {resMessage && <Toast message={resMessage} isSuccess={isSuccess} />}
-        </div>
+        </div >
     );
 
 }
