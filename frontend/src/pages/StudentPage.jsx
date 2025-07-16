@@ -28,7 +28,7 @@ const StudentPage = () => {
     }
         , [selectedStandard, Student]);
 
-    const handleSaveStudent = async ({ name, email, password, rollNumber, gender, dob, standard }) => {
+    const handleSaveStudent = async ({ name, email, password, rollNumber, gender, dob, standard, _id }) => {
         try {
             const request = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/createStudent`, {
                 method: "POST",
@@ -48,9 +48,11 @@ const StudentPage = () => {
 
             setIsSuccess(data.success)
             setResMessage(data.message)
-            // setIsFinished(true);
 
-
+            setStudent((prev)=>[
+                ...prev,
+                {name,gender,dob,rollNumber,standard,_id}
+            ])
         } catch (error) {
             console.log(error);
             setResMessage(error.message);
@@ -174,7 +176,7 @@ const StudentPage = () => {
                 onSave={handleSaveStudent} />
 
             {resMessage && <Toast message={resMessage} isSuccess={isSuccess} />}
-        </div>
+        </div >
     );
 
 }
