@@ -29,9 +29,15 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 from models.sbert_model import evaluate_answer, assign_marks
-
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with your frontend domain in prod
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Request model
 class AnswerItem(BaseModel):
     referenceAnswer: str
