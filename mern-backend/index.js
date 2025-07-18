@@ -14,7 +14,7 @@ const seedRoute = require("./routes/seedRoutes");
 const teacherRouter = require("./routes/teacherRoutes");
 const cors = require('cors')
 
-app.use(cors({ credentials: true, origin: ["http://localhost:5173", "https://smarteval.netlify.app/"] }))
+app.use(cors({ credentials: true, origin: ["http://localhost:5173", "https://smarteval.netlify.app"] }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
