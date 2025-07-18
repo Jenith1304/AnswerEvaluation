@@ -7,7 +7,7 @@ const { createTest, deleteTest, getAllTests, getAllQuestions, updateQuestionInTe
 const teacherRouter = express.Router()
 
 const upload = require('../middlewares/uploadAnswersheet')
-const { getAllStudents, getStudentAnswersheetController } = require('../controllers/AdminController')
+const { getAllStudents, getStudentAnswersheetController, getStudent, createStudent } = require('../controllers/AdminController')
 
 // teacherRouter.post('/createTest', teacherMiddleware, createTest)
 teacherRouter.post('/upload/:studentId/:testId', teacherMiddleware, upload.single('file'), uploadAnswerSheet);
@@ -29,7 +29,8 @@ teacherRouter.put("/updateMarks/:testId/:studentId", teacherMiddleware, updateMa
 teacherRouter.post("/getAnswerSheet", teacherMiddleware, getAnswerSheet);
 teacherRouter.get('/getAllStudents', teacherMiddleware, getAllStudents)
 
-
+teacherRouter.get('/getStudent/:studentId', teacherMiddleware, getStudent)
+teacherRouter.post('/createStudent', teacherMiddleware, createStudent);
 teacherRouter.get('/getAllStandard',teacherMiddleware,getAllStandard)
 
 teacherRouter.get('/getTeacherBasedStandard',teacherMiddleware,teacherBasedStandard)
