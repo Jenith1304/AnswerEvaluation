@@ -10,8 +10,12 @@ const Standard = require("../models/Standard");
 const Student = require("../models/Student");
 const { response } = require("express");
 // Init Google Vision client (make sure GOOGLE_APPLICATION_CREDENTIALS is set)
+// Parse JSON and replace escaped \n with actual newlines
+const credentials = JSON.parse(process.env.GCLOUD_CREDENTIALS);
+credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+
 const client = new vision.ImageAnnotatorClient({
-    credentials : JSON.parse(process.env.GCLOUD_CREDENTIALS)
+     credentials: credentials
 });
 
 
