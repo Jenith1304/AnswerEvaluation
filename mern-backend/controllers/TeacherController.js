@@ -813,23 +813,25 @@ const evaluateResult = async (req, res) => {
             marks: item.marks
         }));
 
-        const gradioPayload = {
-            data: [finalRes],
-            fn_index: 0
-        };
+        // const gradioPayload = {
+        //     data: [finalRes],
+        //     fn_index: 0
+        // };
 
-        const pythonResponse = await fetch('https://KSKJ-ASE_Evaluation.hf.space/run/predict', {
+        const pythonResponse = await fetch('https://kskj-ase-evaluation.hf.space/evaluate', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(gradioPayload)
+            body: JSON.stringify(finalRes) // directly sending the array
         });
+
 
         if (!pythonResponse.ok) throw new Error("Python evaluation failed");
 
         const resultJson = await pythonResponse.json();
         const result = resultJson?.data?.[0];
+
         if (!result || !Array.isArray(result)) return res.status(400).json({ error: "Invalid or empty result from evaluation API." });
 
         result.forEach((item, index) => {
