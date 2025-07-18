@@ -19,17 +19,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get("/", async (req, res) => {
-
-    const user = await User.create({
-        name: "Jenith",
-        email: "jenith@gmail.com",
-        password: "jenith",
-        role: "student"
-    })
-    res.send("User Created")
-
-})
 app.use("/seed", seedRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/auth", authRoute);
