@@ -1,0 +1,216 @@
+/* Import a clean, modern font like Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* --- Global Styles --- */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Main Container with Blackboard Background --- */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* background-image: url('../../src/assets/img1.jpeg'); */
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+}
+
+/* --- The Main Login Card --- */
+.login-card {
+  display: flex;
+  width: 100%;
+  max-width: 950px; /* Increased width for two panels */
+  min-height: 600px;
+  background-color: #ffffff;
+  border-radius: 25px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  overflow: hidden; /* Important for keeping child elements within rounded corners */
+}
+
+/* --- Panel Styling --- */
+.login-panel {
+  padding: 50px 40px;
+  box-sizing: border-box;
+}
+
+/* --- Left Panel: Branding & Illustration --- */
+.branding-panel {
+  flex: 1;
+  background: linear-gradient(135deg, #4a90e2, #50e3c2); /* Gradient inspired by modern dashboards */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.branding-panel h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.branding-panel p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  max-width: 80%;
+}
+
+.illustration {
+  width: 80%;
+  max-width: 300px;
+}
+
+/* --- Right Panel: Login Form --- */
+.form-panel {
+  flex: 1.2; /* Slightly wider */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-panel h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.form-panel .subtitle {
+  color: #777;
+  margin-bottom: 30px;
+}
+
+/* --- Attractive Role Selector --- */
+.role-selector {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.role-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #888;
+}
+
+.role-card:hover {
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.role-card.active {
+  border-color: #4a90e2;
+  background-color: #f0f6ff;
+  color: #4a90e2;
+  font-weight: 600;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+}
+
+.role-card svg {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+/* --- Input Fields --- */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 1.2rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px 15px 15px 50px; /* Make space for icon */
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  margin-bottom: 30px;
+  color: #4a90e2;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* --- Login Button --- */
+.login-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #00B4DB, #0083B0);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  /* background-color: #3a73c2; */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+}
+
+/* --- Responsive Design for smaller screens --- */
+@media (max-width: 900px) {
+  .login-card {
+    flex-direction: column;
+    min-height: auto;
+    max-width: 450px;
+  }
+  .branding-panel {
+    display: none; /* Hide the illustration panel on mobile for a focused form */
+  }
+}
+
+@media (max-width: 500px) {
+  .role-selector {
+    flex-direction: column;
+  }
+  .form-panel h2 {
+    font-size: 1.5rem;
+  }
+}

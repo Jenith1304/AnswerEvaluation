@@ -1,8 +1,8 @@
 fastapi
- uvicorn 
- transformers 
- torch 
- numpy 
- scikit-learn 
- sentence-transformers  
- fastapi 
+uvicorn 
+transformers 
+torch 
+numpy 
+scikit-learn 
+sentence-transformers  
+ 

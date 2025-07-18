@@ -113,13 +113,52 @@ const register = async (req, res) => {
 };
 
 // Login User
+// const login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         const user = await User.findOne({ email });
+//         if (!user) {
+//             return res.status(400).json({ message: "Invalid credentials", success: false });
+//         }
+
+//         const isMatch = await bcrypt.compare(password, user.password);
+//         if (!isMatch) {
+//             return res.status(400).json({ message: "Invalid credentials", success: false });
+//         }
+
+//         const payload = { user: { id: user._id, role: user.role } };
+//         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+//         res.cookie("token", token, {
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "development",
+//             sameSite: "strict",
+//             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+//         });
+
+//         return res.status(200).json({ message: `Welcome back ${user.name}`, success: true });
+//     } catch (error) {
+//         console.error("Login Error:", error);
+//         return res.status(500).json({ message: "Internal Server Error", success: false });
+//     }
+// };
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
+
+        if (!email || !password || !role) {
+            return res.status(400).json({ message: "All fields are required", success: false });
+        }
 
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "Invalid credentials", success: false });
+        }
+
+        // ✅ Check role matches
+        if (user.role !== role) {
+            return res.status(403).json({ message: `Access denied for role: ${role}`, success: false });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -127,17 +166,21 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials", success: false });
         }
 
-        const payload = { user: { id: user.id, role: user.role } };
+        const payload = { user: { id: user._id, role: user.role, name: user.name, email: user.email } };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "development",
-            sameSite: "strict",
+            secure: false,
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        return res.status(200).json({ message: `Welcome back ${user.name}`, success: true });
+        return res.status(200).json({
+            message: `Welcome back ${user.name}`,
+            success: true,
+        });
+
     } catch (error) {
         console.error("Login Error:", error);
         return res.status(500).json({ message: "Internal Server Error", success: false });
@@ -148,8 +191,8 @@ const login = async (req, res) => {
 const logout = (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development",
-        sameSite: "strict",
+        secure: false,
+        sameSite: "lax",
     });
 
     return res.status(200).json({ message: "Logout successful", success: true });
@@ -172,4 +215,20 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { register, login, logout, getUserProfile };
+//verify cookies
+const verify = (req, res) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ success: false, message: "No token found" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        return res.status(200).json({ success: true, user: decoded.user });
+    } catch (err) {
+        return res.status(401).json({ success: false, message: "Invalid token" });
+    }
+}
+
+module.exports = { register, login, logout, getUserProfile, verify };

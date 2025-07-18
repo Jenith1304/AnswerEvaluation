@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import StatCard from '../components/StatCard';
 import AttendanceChart from '../components/AttendanceChart';
 import StudentChart from '../components/StudentChart';
+import Toast from '../components/Toast';
+import { useLocation } from 'react-router-dom';
 
 const DashboardPage = () => {
     const [dashboardData, setDashboardData] = useState(null);
@@ -75,9 +77,11 @@ const DashboardPage = () => {
             color: "#FEF5C3"
         },
     ];
-
+    const location = useLocation()
+    const [toast, setToast] = useState(location.state?.toast || null)
     return (
         <div className="dashboard-container">
+            {toast ? <Toast message={toast.message} isSuccess={toast.isSuccess} /> : null}
             <main className="dashboard-main">
                 {loading ? (
                     <p>Loading...</p>
@@ -95,6 +99,7 @@ const DashboardPage = () => {
                     </>
                 )}
             </main>
+
         </div>
     );
 };

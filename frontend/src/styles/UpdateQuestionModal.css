@@ -52,10 +52,9 @@ body {
 }
 
 .btn-update {
-  background: #007bff; /* A slightly different blue for the main card */
+  background: linear-gradient(45deg, #00B4DB, #0083B0); /* A slightly different blue for the main card */
   color: white;
   float: right;
-  background: #17a2b8;
 }
 .btn-update:hover {
   background: #138496;
