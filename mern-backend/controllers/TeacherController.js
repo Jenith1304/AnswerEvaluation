@@ -15,14 +15,14 @@ const credentials = JSON.parse(process.env.GCLOUD_CREDENTIALS);
 credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
 
 const client = new vision.ImageAnnotatorClient({
-     credentials: credentials
+    credentials: credentials
 });
 
 
 const createTest = async (req, res) => {
     try {
 
-        
+
         const teacherId = await Teacher.findOne({ userId: req.user.id });
         const {
             // Provided directly
@@ -813,24 +813,30 @@ const evaluateResult = async (req, res) => {
             marks: item.marks
         }));
 
-        // ✅ Call Python backend (Gradio version OR Flask on your server)
+        const gradioPayload = {
+            data: [finalRes],
+            fn_index: 0
+        };
+
         const pythonResponse = await fetch('https://KSKJ-ASE_Evaluation.hf.space/run/predict', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(finalRes)
+            body: JSON.stringify(gradioPayload)
         });
 
         if (!pythonResponse.ok) throw new Error("Python evaluation failed");
 
-        const result = await pythonResponse.json();
-        if (!result) return res.status(400).json({ error: "Empty Result" });
+        const resultJson = await pythonResponse.json();
+        const result = resultJson?.data?.[0];
+        if (!result || !Array.isArray(result)) return res.status(400).json({ error: "Invalid or empty result from evaluation API." });
 
         result.forEach((item, index) => {
             item['questionId'] = response.questionIds[index]._id;
             delete item.similarity_score;
             delete item.feedback;
+
         });
 
         await Result.findOneAndUpdate(
@@ -853,6 +859,7 @@ const evaluateResult = async (req, res) => {
         return res.status(500).json({ error: "Internal server error." });
     }
 };
+
 
 
 const updateMarks = async (req, res) => {
@@ -947,35 +954,35 @@ const getAllStudentsofStd = async (req, res) => {
     }
 };
 
-const getAllStandard = async(req,res)=>{
+const getAllStandard = async (req, res) => {
     try {
-        let response = await Standard.find().select('standard subjects').populate('subjects.subjectId','subject_name').lean()
+        let response = await Standard.find().select('standard subjects').populate('subjects.subjectId', 'subject_name').lean()
 
 
-        if(!response)
+        if (!response)
             throw new Error("Did not get any standards")
 
 
-        
 
-        response = response.map((obj)=>{
+
+        response = response.map((obj) => {
             return {
                 ...obj,
-                subjects : obj.subjects.map((subject)=>{
-                    return{
-                        subjectId : subject.subjectId._id,
-                        subject_name : subject.subjectId.subject_name
+                subjects: obj.subjects.map((subject) => {
+                    return {
+                        subjectId: subject.subjectId._id,
+                        subject_name: subject.subjectId.subject_name
                     }
                 })
 
             }
         })
 
-        return res.status(200).json({message : "Standard Got",data : response,success : true})
+        return res.status(200).json({ message: "Standard Got", data: response, success: true })
 
     } catch (error) {
-        console.log('Error in getAll Standard',error)
-        return res.status(500).json({message : "Intenal Server Error",success : false})
+        console.log('Error in getAll Standard', error)
+        return res.status(500).json({ message: "Intenal Server Error", success: false })
     }
 }
 
@@ -993,7 +1000,7 @@ const teacherBasedStandard = async (req, res) => {
                 return {
                     subject_name: subject.subjectId.subject_name,
                     standard: subject.standardId.standard,
-                    subjectId : subject.subjectId._id,
+                    subjectId: subject.subjectId._id,
                     standardId: subject.standardId._id,
                 }
             }
@@ -1031,5 +1038,5 @@ const getAnswerSheet = async (req, res) => {
 
 module.exports = {
     getAllStandard,
-    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet, updateMarks, getAllTestsTeacher, getAllStudentsofStd, getAnswerSheet,teacherBasedStandard
+    createTest, getAllTests, deleteTest, getAllQuestions, updateQuestionInTest, addQuestionToTest, removeQuestionFromTest, evaluateResult, uploadAnswerSheet, updateMarks, getAllTestsTeacher, getAllStudentsofStd, getAnswerSheet, teacherBasedStandard
 };
