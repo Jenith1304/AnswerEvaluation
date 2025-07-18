@@ -505,6 +505,136 @@ const removeQuestionFromTest = async (req, res) => {
     }
 };
 
+// const evaluateResult = async (req, res) => {
+//     try {
+//         const { answerSheetId, testId } = req.body;
+
+//         if (!answerSheetId) {
+//             return res.status(400).json({ error: "answerSheetId is required." });
+//         }
+
+//         // Fetch PDF record
+//         const pdfRecord = await AnswerSheetPDF.findById(answerSheetId);
+//         if (!pdfRecord) {
+//             return res.status(404).json({ error: "Answer sheet not found." });
+//         }
+//         const studentId = pdfRecord.studentId;
+//         const fileUrl = pdfRecord.fileUrl;
+
+//         // ✅ Extract correct public_id from Cloudinary URL (without version and extension)
+//         const fileUrlParts = fileUrl.split("/upload/");
+//         if (fileUrlParts.length < 2) {
+//             return res.status(400).json({ error: "Invalid Cloudinary URL format." });
+//         }
+
+//         let publicIdWithExt = fileUrlParts[1]; // e.g. "v123456789/folder/filename.pdf"
+//         let pathParts = publicIdWithExt.split("/");
+
+//         // Remove version prefix (starts with 'v')
+//         if (pathParts[0].startsWith("v") && !isNaN(pathParts[0].slice(1))) {
+//             pathParts.shift();
+//         }
+
+//         const cleanedPublicId = pathParts.join("/").replace(".pdf", "");
+
+//         // ✅ Get total page count
+//         const totalPages = await getPdfPageCount(cleanedPublicId);
+//         if (!totalPages || totalPages < 1) {
+//             return res.status(400).json({ error: "Could not determine page count of the PDF." });
+//         }
+
+//         // ✅ Generate image URLs for each page using Cloudinary transformations
+//         const imageUrls = generateImageUrlsFromCloudinaryPDF(fileUrl, totalPages);
+
+
+
+
+
+
+//         //image URL to Cloud VISION
+//         // const questionRegex = /(Q\.\?\s?\d+|Question\s?\d+|\b\d+\.)/gi;
+//         // const { imageUrls } = req.body;
+
+//         if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+//             return res.status(400).json({ error: 'imageUrls must be a non-empty array.' });
+//         }
+
+//         const extractedAnswers = [];
+
+//         for (let i = 0; i < imageUrls.length; i++) {
+//             const url = imageUrls[i];
+
+//             const [result] = await client.documentTextDetection({ image: { source: { imageUri: url } } });
+
+//             const fullText = result.fullTextAnnotation?.text || '';
+
+//             if (!fullText.trim()) {
+//                 extractedAnswers.push(`Answer ${i + 1}:
+//                     No text detected.`);
+//                 continue;
+//             }
+
+//             // Treat entire page as a separate answer
+//             extractedAnswers.push(`Answer ${i + 1}:
+//             ${fullText.trim()}`);
+//         }
+
+//         // Combine all answers
+//         // const finalText = extractedAnswers.join('\n\n-------------------------------\n\n');
+
+//         // Return the final structured text
+//         // return res.status(200).json({ totalPages, imageUrls });
+//         const response = await Test.findById(testId).select("questionIds").populate("questionIds", "referenceAnswer marks");
+//         if (!response) {
+//             return res.status(400).json({ error: "No Test Found" });
+
+//         }
+
+//         const finalRes = response.questionIds.map((item, index) => {
+//             return {
+//                 referenceAnswer: item.referenceAnswer,
+//                 studentAnswer: index < extractedAnswers.length ? extractedAnswers[index] : "",
+//                 marks: item.marks
+//             }
+//         })
+
+//         const pythonResponse = await fetch('http://0.0.0.0:4000/evaluate', {
+//             method: "POST",
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(finalRes)
+//         });
+//         if (!pythonResponse.ok) {
+//             throw new Error("Evalution Error in python did not get ok response")
+//         }
+//         const result = await pythonResponse.json()
+//         if (!result) {
+//             return res.status(400).json({ error: "Empty Result " });
+//         }
+//         result.forEach((item, index) => {
+//             item['questionId'] = response.questionIds[index]._id;
+//             delete item.similarity_score;
+//             delete item.feedback;
+//         })
+//         Result.findOneAndUpdate({
+//             testId,
+//             studentId,
+//         }, {
+//             $set: {
+//                 result
+//             },
+//         }, { upsert: true }).then(() => { return res.status(200).json({ message: 'OCR completed successfully.', textOutput: extractedAnswers, totalPages, imageUrls, finalRes, result }); })
+//             .catch(() => { return res.status(400).json({ error: "Result not created " }); })
+
+//     } catch (err) {
+//         console.error("Failed to extract PDF pages", err);
+//         res.status(500).json({ error: "Internal server error" });
+//         console.error('OCR Processing Failed:', err);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// }
+
 const evaluateResult = async (req, res) => {
     try {
         const { answerSheetId, testId } = req.body;
@@ -518,42 +648,29 @@ const evaluateResult = async (req, res) => {
         if (!pdfRecord) {
             return res.status(404).json({ error: "Answer sheet not found." });
         }
+
         const studentId = pdfRecord.studentId;
         const fileUrl = pdfRecord.fileUrl;
 
-        // ✅ Extract correct public_id from Cloudinary URL (without version and extension)
         const fileUrlParts = fileUrl.split("/upload/");
         if (fileUrlParts.length < 2) {
             return res.status(400).json({ error: "Invalid Cloudinary URL format." });
         }
 
-        let publicIdWithExt = fileUrlParts[1]; // e.g. "v123456789/folder/filename.pdf"
+        let publicIdWithExt = fileUrlParts[1];
         let pathParts = publicIdWithExt.split("/");
 
-        // Remove version prefix (starts with 'v')
         if (pathParts[0].startsWith("v") && !isNaN(pathParts[0].slice(1))) {
             pathParts.shift();
         }
 
         const cleanedPublicId = pathParts.join("/").replace(".pdf", "");
-
-        // ✅ Get total page count
         const totalPages = await getPdfPageCount(cleanedPublicId);
         if (!totalPages || totalPages < 1) {
             return res.status(400).json({ error: "Could not determine page count of the PDF." });
         }
 
-        // ✅ Generate image URLs for each page using Cloudinary transformations
         const imageUrls = generateImageUrlsFromCloudinaryPDF(fileUrl, totalPages);
-
-
-
-
-
-
-        //image URL to Cloud VISION
-        // const questionRegex = /(Q\.\?\s?\d+|Question\s?\d+|\b\d+\.)/gi;
-        // const { imageUrls } = req.body;
 
         if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
             return res.status(400).json({ error: 'imageUrls must be a non-empty array.' });
@@ -563,79 +680,76 @@ const evaluateResult = async (req, res) => {
 
         for (let i = 0; i < imageUrls.length; i++) {
             const url = imageUrls[i];
-
             const [result] = await client.documentTextDetection({ image: { source: { imageUri: url } } });
-
             const fullText = result.fullTextAnnotation?.text || '';
 
             if (!fullText.trim()) {
-                extractedAnswers.push(`Answer ${i + 1}:
-                    No text detected.`);
+                extractedAnswers.push(`Answer ${i + 1}:\nNo text detected.`);
                 continue;
             }
 
-            // Treat entire page as a separate answer
-            extractedAnswers.push(`Answer ${i + 1}:
-            ${fullText.trim()}`);
+            extractedAnswers.push(`Answer ${i + 1}:\n${fullText.trim()}`);
         }
 
-        // Combine all answers
-        // const finalText = extractedAnswers.join('\n\n-------------------------------\n\n');
-
-        // Return the final structured text
-        // return res.status(200).json({ totalPages, imageUrls });
         const response = await Test.findById(testId).select("questionIds").populate("questionIds", "referenceAnswer marks");
         if (!response) {
             return res.status(400).json({ error: "No Test Found" });
-
         }
 
-        const finalRes = response.questionIds.map((item, index) => {
-            return {
-                referenceAnswer: item.referenceAnswer,
-                studentAnswer: index < extractedAnswers.length ? extractedAnswers[index] : "",
-                marks: item.marks
+        const evaluationPayload = response.questionIds.map((item, index) => ({
+            referenceAnswer: item.referenceAnswer,
+            studentAnswer: index < extractedAnswers.length ? extractedAnswers[index] : "",
+            marks: item.marks
+        }));
+
+        const evaluationResults = [];
+
+        // 🔁 Gradio expects 1 input per call, so loop and call one by one
+        for (const item of evaluationPayload) {
+            const gradioResponse = await fetch("https://KSKJ-ASE_Evaluation.hf.space/run/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    data: [item.referenceAnswer, item.studentAnswer, item.marks]
+                })
+            });
+
+            if (!gradioResponse.ok) {
+                throw new Error("Gradio prediction failed.");
             }
-        })
 
-        const pythonResponse = await fetch('http://0.0.0.0:4000/evaluate', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(finalRes)
+            const gradioResult = await gradioResponse.json();
+
+            const [similarity, marks_obtained, feedback] = gradioResult.data;
+
+            evaluationResults.push({
+                questionId: response.questionIds[evaluationResults.length]._id,
+                marks_obtained: Math.round(marks_obtained * 100) / 100  // round to 2 decimal
+            });
+        }
+
+        await Result.findOneAndUpdate(
+            { testId, studentId },
+            { $set: { result: evaluationResults } },
+            { upsert: true }
+        );
+
+        return res.status(200).json({
+            message: "OCR + Evaluation completed.",
+            textOutput: extractedAnswers,
+            totalPages,
+            imageUrls,
+            evaluationPayload,
+            result: evaluationResults
         });
-        if (!pythonResponse.ok) {
-            throw new Error("Evalution Error in python did not get ok response")
-        }
-        const result = await pythonResponse.json()
-        if (!result) {
-            return res.status(400).json({ error: "Empty Result " });
-        }
-        result.forEach((item, index) => {
-            item['questionId'] = response.questionIds[index]._id;
-            delete item.similarity_score;
-            delete item.feedback;
-        })
-        Result.findOneAndUpdate({
-            testId,
-            studentId,
-        }, {
-            $set: {
-                result
-            },
-        }, { upsert: true }).then(() => { return res.status(200).json({ message: 'OCR completed successfully.', textOutput: extractedAnswers, totalPages, imageUrls, finalRes, result }); })
-            .catch(() => { return res.status(400).json({ error: "Result not created " }); })
 
     } catch (err) {
-        console.error("Failed to extract PDF pages", err);
-        res.status(500).json({ error: "Internal server error" });
-        console.error('OCR Processing Failed:', err);
-        res.status(500).json({ error: 'Internal server error.' });
+        console.error("Evaluation failed:", err);
+        return res.status(500).json({ error: "Internal server error." });
     }
-}
-
-
+};
 
 const updateMarks = async (req, res) => {
     try {
