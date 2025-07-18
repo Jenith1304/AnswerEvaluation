@@ -10,7 +10,9 @@ const Standard = require("../models/Standard");
 const Student = require("../models/Student");
 const { response } = require("express");
 // Init Google Vision client (make sure GOOGLE_APPLICATION_CREDENTIALS is set)
-const client = new vision.ImageAnnotatorClient();
+const client = new vision.ImageAnnotatorClient({
+    credentials : JSON.parse(process.env.GCLOUD_CREDENTIALS)
+});
 
 
 const createTest = async (req, res) => {
